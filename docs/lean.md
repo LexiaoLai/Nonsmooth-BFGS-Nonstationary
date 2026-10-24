@@ -28,8 +28,8 @@ The committed toolchain selects Lean 4.33.1. The manifest pins mathlib to
 Preserve the manifest; `lake update` is for an intentional dependency change.
 
 The checker validates the local import closure, rejects unimported source
-files, compiles stale modules, checks rejection of a false interval bound,
-and audits the transitive axioms of every local declaration. It also checks
+files, compiles stale modules, and audits the transitive axioms of every
+local declaration. It also checks
 the exact conjunction of the concrete theorem. Its wrapper uses this
 repository's own build and dependency directories and never changes the
 manifest or downloads packages.
@@ -155,10 +155,6 @@ audit includes private and generated names and permits only the usual
 mathlib foundations `propext`, `Classical.choice` and `Quot.sound` as transitive
 axioms. Its generated source is saved as
 `.lake/build/lib/lean/CounterexampleAxiomAudit.lean`.
-
-The negative check proves that `[0,1]` contains `1`, then changes only the
-upper endpoint to `0`. The second proof must fail with the numerical goal
-`False`; an import or syntax error does not count as rejection.
 
 The published entry bounds have row sums `(357,440,776,715)/1000`, all below
 `0.78`. The notebook displays the same matrix and checks it while retaining

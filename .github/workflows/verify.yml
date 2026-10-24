@@ -41,5 +41,5 @@ jobs:
           # Archiving the entire .lake tree exhausts the runner's disk space.
           # Keep the upstream mathlib cache and rebuild the local proofs.
           use-github-cache: 'false'
-      - name: Audit all axioms and reject a corrupted interval certificate
+      - name: Check the main theorem and audit all axioms
         run: python3 verification/check_lean.py --incremental

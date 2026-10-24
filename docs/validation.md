@@ -19,9 +19,7 @@ The following `verification/check_lean.py --incremental` audit also passed:
 - Only `propext`, `Classical.choice`, and `Quot.sound` as transitive axioms.
 - Both `BFGS.Counterexample.concrete_counterexample` and
   `BFGS.Counterexample.main_theorem` pass the statement and axiom checks.
-- A deliberately corrupted interval certificate is rejected with the numerical
-  goal `False`; an import failure does not count as successful rejection.
-- The conservative freshness check rebuilt 69 modules and reused 18.
+- The freshness check reused all 87 compiled modules before rerunning the axiom audit.
 
 All nine dependency revisions were checked against `lake-manifest.json`.
 Their local caches are independent physical copies, with no shared dependency

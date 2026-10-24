@@ -62,8 +62,8 @@ lake exe cache get
 transitive packages; do not run `lake update` unless deliberately changing
 those dependencies. The first command retrieves the corresponding package
 cache. The check script builds the local library with warnings treated as
-errors, audits all local declarations and rejects a deliberately invalid
-interval certificate. It needs Python 3.10 or newer for the audit script.
+errors and audits the transitive axioms of all local declarations. It needs
+Python 3.10 or newer for the audit script.
 
 To use the theorem in another Lean file:
 

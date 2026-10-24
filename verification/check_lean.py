@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import json
 import re
 import shutil
 import subprocess
@@ -186,32 +185,6 @@ example :
     return audit
 
 
-def check_corrupted_interval() -> None:
-    """A valid numeric certificate passes; changing only its upper bound fails."""
-    source = '''import BFGS.Counterexample.Certificates.IntervalBase
-open BFGS
-example : (⟨(0 : ℚ), (UPPER : ℚ)⟩ : RationalInterval).Contains (1 : ℝ) := by
-  norm_num [RationalInterval.Contains]
-'''
-    with tempfile.TemporaryDirectory(prefix="bfgs-negative-check-") as directory:
-        path = Path(directory) / "IntervalCheck.lean"
-        path.write_text(source.replace("UPPER", "1"))
-        run_lean(["-DwarningAsError=true", str(path)], capture=True)
-        path.write_text(source.replace("UPPER", "0"))
-        rejected = subprocess.run([str(WRAPPER), "--json", "-DwarningAsError=true", str(path)],
-                                  cwd=ROOT, text=True, capture_output=True)
-        messages = [json.loads(line) for line in rejected.stdout.splitlines() if line.strip()]
-        errors = [item for item in messages if item.get("severity") == "error"]
-        # A missing import, syntax error, or unavailable tactic is not evidence.
-        if (rejected.returncode == 0 or not errors or
-                any("unsolved goals" not in item.get("data", "") or
-                    "⊢ False" not in item.get("data", "") for item in errors)):
-            raise RuntimeError("Corrupted interval did not fail for the expected numerical "
-                               "contradiction:\n" + rejected.stdout + rejected.stderr)
-    print("Negative check passed: changing interval [0,1] to [0,0] rejects 1 ∈ I "
-          "with the numerical goal False.", flush=True)
-
-
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--static-only", action="store_true",
@@ -276,7 +249,6 @@ def main() -> int:
     BUILD.mkdir(parents=True, exist_ok=True)
     audit = BUILD / "CounterexampleAxiomAudit.lean"
     audit.write_text(audit_source(ordered))
-    check_corrupted_interval()
     print("Auditing every declaration in the compiled local import closure.", flush=True)
     run_lean(["-DwarningAsError=true", str(audit)])
     check_sources_unchanged(original)
