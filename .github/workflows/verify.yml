@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
           cache: pip
@@ -30,7 +30,7 @@ jobs:
     env:
       LEAN_NUM_THREADS: '2'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: leanprover/lean-action@v1
         with:
           build: true
@@ -38,5 +38,8 @@ jobs:
           test: false
           lint: false
           use-mathlib-cache: 'true'
+          # Archiving the entire .lake tree exhausts the runner's disk space.
+          # Keep the upstream mathlib cache and rebuild the local proofs.
+          use-github-cache: 'false'
       - name: Audit all axioms and reject a corrupted interval certificate
         run: python3 verification/check_lean.py --incremental
