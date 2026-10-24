@@ -28,7 +28,7 @@ optimized execution.
 The scripts also work from another working directory when their paths are
 specified correctly. From this directory, for example, use `python3 verify.py`.
 The calculations require no figures, simulation scripts, or files outside
-this directory. The [manuscript](../manuscript/main.pdf) is included for reference.
+this directory. The [manuscript](../BFGS%20can%20converge%20to%20non-Clarke-stationary%20points%20with%20positive%20probability.pdf) is included for reference.
 
 ## Notebook and all regression tests
 

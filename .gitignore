@@ -12,6 +12,6 @@ __pycache__/
 *.trace
 *.log
 
-# Publish only the manuscript PDF.
-manuscript/*
-!manuscript/main.pdf
+# Keep manuscript TeX and bibliography sources out of the supplement.
+*.tex
+*.bib

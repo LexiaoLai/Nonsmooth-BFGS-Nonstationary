@@ -1,7 +1,7 @@
 # Correspondence with the manuscript
 
 This guide uses the numbering in the included
-[manuscript](../manuscript/main.pdf), *BFGS can converge to non-Clarke-stationary
+[manuscript](../BFGS%20can%20converge%20to%20non-Clarke-stationary%20points%20with%20positive%20probability.pdf), *BFGS can converge to non-Clarke-stationary
 points with positive probability*.
 
 The organization separates the final theorem, supporting analysis, and generated

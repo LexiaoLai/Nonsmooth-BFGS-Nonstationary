@@ -2,7 +2,7 @@
 
 Verification supplement for:
 
-> Lexiao Lai. [*BFGS can converge to non-Clarke-stationary points with positive probability*](manuscript/main.pdf). Manuscript, 2026.
+> Lexiao Lai. [*BFGS can converge to non-Clarke-stationary points with positive probability*](BFGS%20can%20converge%20to%20non-Clarke-stationary%20points%20with%20positive%20probability.pdf). Manuscript, 2026.
 
 This repository contains the manuscript, the Lean proof, and the self-contained Python notebook
 for a coercive, locally Lipschitz, semialgebraic objective on R² for which BFGS
@@ -13,7 +13,7 @@ failure probability under the Gaussian/Wishart initialization law.
 
 ## Start here
 
-- [Manuscript PDF](manuscript/main.pdf).
+- [Manuscript PDF](BFGS%20can%20converge%20to%20non-Clarke-stationary%20points%20with%20positive%20probability.pdf).
 - [Executed notebook](verification/verification.ipynb): exact cycle identities,
   interval bounds, and the published tables and contraction certificate.
 - [Offline HTML notebook](verification/verification.html): download and open
@@ -88,7 +88,6 @@ BFGS/MainTheorem.lean          Theorem 1.1 and its concrete witness
 BFGS/Counterexample/           Construction and its certified inequalities
 BFGS/Analysis/                 Supporting analysis and BFGS dynamics
 BFGS/Arithmetic/               Exact arithmetic and interval lemmas
-manuscript/                   Manuscript PDF
 verification/                 Executed notebook, Python checks and certificates
 experiments/                  Figure-generation scripts and reproduction instructions
 docs/manuscript-map.md         Correspondence with manuscript results
@@ -118,6 +117,6 @@ See [validation](docs/validation.md) for the checks performed on this bundle.
 
 The original code, notebooks, and accompanying software documentation are
 licensed under the [MIT License](LICENSE). This license does not apply to
-the [manuscript PDF](manuscript/main.pdf), whose rights remain with the author.
+the [manuscript PDF](BFGS%20can%20converge%20to%20non-Clarke-stationary%20points%20with%20positive%20probability.pdf), whose rights remain with the author.
 Third-party dependencies retain their respective licenses.
 Citation metadata for the verification supplement is in [CITATION.cff](CITATION.cff).

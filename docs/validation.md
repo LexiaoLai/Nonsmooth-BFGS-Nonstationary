@@ -1,7 +1,7 @@
 # Validation of this bundle
 
 Validated on 24 October 2026 with Lean 4.33.1 and Python 3.12.14.
-The included [manuscript](../manuscript/main.pdf) and
+The included [manuscript](../BFGS%20can%20converge%20to%20non-Clarke-stationary%20points%20with%20positive%20probability.pdf) and
 [manuscript map](manuscript-map.md) provide the numbered result correspondence.
 
 ## Lean build and axiom audit
