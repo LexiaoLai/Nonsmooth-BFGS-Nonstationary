@@ -31,7 +31,7 @@ test_reject_unsafe_inputs (test_verifier.CertificateTests.test_reject_unsafe_inp
 test_shifted_root_box_is_rejected (test_verifier.CertificateTests.test_shifted_root_box_is_rejected) ... ok
 
 ----------------------------------------------------------------------
-Ran 22 tests in 6.208s
+Ran 22 tests in 5.999s
 
 OK
 All requested checks passed.

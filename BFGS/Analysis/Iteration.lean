@@ -1,7 +1,7 @@
 import BFGS.Analysis.Algorithm
 
-/-! The actual five-coordinate BFGS state, its accepted half-step map,
-and agreement of that map with the unit-start line search. -/
+/-! The five-coordinate BFGS state, accepted-step maps, and their agreement
+with the Armijo–Wolfe line search. -/
 namespace BFGS.Algorithm
 noncomputable section
 open Classical

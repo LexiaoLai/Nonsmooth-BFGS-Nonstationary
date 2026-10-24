@@ -1,6 +1,8 @@
 # BFGS can converge to non-Clarke-stationary points with positive probability
 
-Manuscript and verification supplement by Lexiao Lai.
+Verification supplement for:
+
+> Lexiao Lai. [*BFGS can converge to non-Clarke-stationary points with positive probability*](manuscript/main.pdf). Manuscript, 2026.
 
 This repository contains the manuscript, the Lean proof, and the self-contained Python notebook
 for a coercive, locally Lipschitz, semialgebraic objective on R² for which BFGS
@@ -20,6 +22,7 @@ failure probability under the Gaussian/Wishart initialization law.
 - [Manuscript correspondence](docs/manuscript-map.md): section, result, and equation
   numbers linked to the Python checks and Lean declarations.
 - [Lean proof guide](docs/lean.md): definitions, proof organization, and trust boundary.
+- [Figure reproduction](experiments/README.md): numerical objective and scripts for Figures 1–2.
 
 The notebook uses exact rational arithmetic and outward interval bounds. The
 Lean proof independently checks the arithmetic and its connection to the
@@ -87,6 +90,7 @@ BFGS/Analysis/                 Supporting analysis and BFGS dynamics
 BFGS/Arithmetic/               Exact arithmetic and interval lemmas
 manuscript/                   Manuscript PDF
 verification/                 Executed notebook, Python checks and certificates
+experiments/                  Figure-generation scripts and reproduction instructions
 docs/manuscript-map.md         Correspondence with manuscript results
 scripts/check.sh               Combined Python and Lean checks
 lean-toolchain                Pinned Lean version
@@ -109,3 +113,11 @@ the supplement is one realization of Lemmas 2.6 and 2.10. Lean uses the manuscri
 factor and proves attraction to its positive fixed ray.
 
 See [validation](docs/validation.md) for the checks performed on this bundle.
+
+## License and citation
+
+The original code, notebooks, and accompanying software documentation are
+licensed under the [MIT License](LICENSE). This license does not apply to
+the [manuscript PDF](manuscript/main.pdf), whose rights remain with the author.
+Third-party dependencies retain their respective licenses.
+Citation metadata for the verification supplement is in [CITATION.cff](CITATION.cff).

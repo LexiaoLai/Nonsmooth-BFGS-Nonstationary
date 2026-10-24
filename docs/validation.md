@@ -19,7 +19,7 @@ The following `verification/check_lean.py --incremental` audit also passed:
 - Only `propext`, `Classical.choice`, and `Quot.sound` as transitive axioms.
 - Both `BFGS.Counterexample.concrete_counterexample` and
   `BFGS.Counterexample.main_theorem` pass the statement and axiom checks.
-- The freshness check reused all 87 compiled modules before rerunning the axiom audit.
+- The freshness check rebuilt one module and reused 86 compiled modules before rerunning the axiom audit.
 
 All nine dependency revisions were checked against `lake-manifest.json`.
 Their local caches are independent physical copies, with no shared dependency
@@ -46,6 +46,22 @@ The notebook and standalone verifier agree on both interpolation tables,
 the refined root interval, Γ, and the row sums. These computed bounds agree
 with the included manuscript.
 
+## Figures and manuscript
+
+The [experiment scripts](../experiments/README.md) regenerate Figures 1 and 2
+without reading saved certificates or numerical outputs. The full runs passed:
+120 updates for Figure 1, and 100 runs of 1000 updates at 200-digit precision
+for Figure 2. Both regenerated PNGs are pixel-identical to the manuscript
+figures. The recorded numerical data agree with the earlier experiment,
+including all 100 complete runs; only script hashes and bookkeeping names
+changed. The finite classification gives 86 runs below the final-norm
+threshold and 14 remaining runs, with no numerical errors.
+
+The updated manuscript compiles without warnings or unresolved references.
+Its main theorem stays together on one page; the algorithm now explicitly
+handles a missing line derivative. The repository contains the manuscript
+PDF only.
+
 ## Regeneration and packaging
 
 In a disposable directory, the optional generators independently recreated
@@ -59,7 +75,7 @@ The SHA-256 digest of the sorted concatenation of each Lean file's relative
 path, a NUL byte, its hexadecimal SHA-256 digest, and a newline is:
 
 ```text
-fc041630e8c1559d4adf7da897cfd57e24e62c7a6df895e189b1ffdb3a5cfe8b
+5d73a8f18f4db30c9fcb24bbd97e6a13a5fd80fbbb9d44c3183f4f7124f90d72
 ```
 
 Documentation file links, shell syntax, source hygiene, and the public import
