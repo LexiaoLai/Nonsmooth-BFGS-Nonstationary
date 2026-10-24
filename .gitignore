@@ -1,0 +1,17 @@
+.lake/
+.venv/
+.venv-*/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.DS_Store
+*.olean
+*.ilean
+*.olean.server
+*.olean.private
+*.trace
+*.log
+
+# Publish only the manuscript PDF.
+manuscript/*
+!manuscript/main.pdf
