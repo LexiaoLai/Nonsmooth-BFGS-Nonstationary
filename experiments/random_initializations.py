@@ -12,7 +12,6 @@ from decimal import Decimal, localcontext
 import gzip
 import hashlib
 import json
-import os
 from pathlib import Path
 
 import numpy as np
@@ -86,7 +85,6 @@ def simulate(samples, radius, steps, seed, precision=200):
 
 
 def render(summary, records, reference, output):
-    os.environ['PATH'] = '/Library/TeX/texbin:' + os.environ.get('PATH', '')
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt

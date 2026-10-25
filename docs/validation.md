@@ -22,8 +22,7 @@ The following `verification/check_lean.py --incremental` audit also passed:
 - The freshness check rebuilt one module and reused 86 compiled modules before rerunning the axiom audit.
 
 All nine dependency revisions were checked against `lake-manifest.json`.
-Their local caches are independent physical copies, with no shared dependency
-symlinks. No Lean source changed after the final audit. The actual, unfiltered
+No Lean source changed after the final audit. The actual, unfiltered
 [Lean transcript](lean-validation.txt) includes informational tactic suggestions
 but no build errors or warnings.
 

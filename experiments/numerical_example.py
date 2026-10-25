@@ -13,7 +13,6 @@ import hashlib
 import io
 import json
 import math
-import os
 import numpy as np
 
 ROOT = Path(__file__).resolve().parent
@@ -333,7 +332,6 @@ def check_derivatives_and_extension(example,data):
 
 
 def render(example,run,output):
-    os.environ["PATH"] = "/Library/TeX/texbin:"+os.environ.get("PATH","")
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt

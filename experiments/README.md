@@ -21,9 +21,9 @@ python3 -m venv .venv
 ```
 
 Rendering also requires a LaTeX installation with `latex`, `dvipng`, and
-Computer Modern fonts available on `PATH`. On macOS the scripts additionally
-look in the standard MacTeX directory `/Library/TeX/texbin`. All plot text is
-rendered with LaTeX. The pinned Python packages were tested with Python 3.12.14.
+Computer Modern fonts. Make sure `latex` and `dvipng` are available on `PATH`
+before running the scripts. All plot text is rendered with LaTeX. The pinned
+Python packages were tested with Python 3.12.14.
 
 The first script regenerates Figure 1 and checks values, gradients,
 Hessians, interpolation joins, numerical derivatives, and the shrinking
