@@ -1,6 +1,6 @@
 # Validation of this bundle
 
-Validated on 24 October 2026 with Lean 4.33.1 and Python 3.12.14.
+Validated on 25 October 2026 with Lean 4.33.1 and Python 3.12.14.
 The included [manuscript](../BFGS%20can%20converge%20to%20non-Clarke-stationary%20points%20with%20positive%20probability.pdf) and
 [manuscript map](manuscript-map.md) provide the numbered result correspondence.
 
@@ -29,8 +29,9 @@ but no build errors or warnings.
 
 ## Python and notebook
 
-The complete Python workflow executes the six self-contained notebook code
-cells in a fresh kernel with an empty working directory and runs the 22-test
+The complete Python workflow was rerun successfully on 25 October 2026 after
+the notebook reference, regression-test simplifications, and manuscript
+correspondence review. It executes the six self-contained notebook code cells in a fresh kernel with an empty working directory and runs the
 regression suite. The exact verifier passes 137 named checks. Formula, matrix, and table
 outputs use native LaTeX; the HTML export renders these saved outputs offline.
 See the [Python transcript](python-validation.txt) for the executed tests.
@@ -57,7 +58,8 @@ including all 100 complete runs; only script hashes and bookkeeping names
 changed. The finite classification gives 86 runs below the final-norm
 threshold and 14 remaining runs, with no numerical errors.
 
-The updated manuscript compiles without warnings or unresolved references.
+The manuscript was rebuilt from the current source on 25 October 2026 and
+compiles without warnings or unresolved references.
 Its main theorem stays together on one page; the algorithm now explicitly
 handles a missing line derivative. The repository contains the manuscript
 PDF only.
@@ -75,7 +77,7 @@ The SHA-256 digest of the sorted concatenation of each Lean file's relative
 path, a NUL byte, its hexadecimal SHA-256 digest, and a newline is:
 
 ```text
-5d73a8f18f4db30c9fcb24bbd97e6a13a5fd80fbbb9d44c3183f4f7124f90d72
+6f76b55f9a412a02a56f959da96f2862bbe4dd77fccd307d093574618f778955
 ```
 
 Documentation file links, shell syntax, source hygiene, and the public import

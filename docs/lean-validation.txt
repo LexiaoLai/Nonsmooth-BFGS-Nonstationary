@@ -1,39 +1,23 @@
-ℹ [8728/8792] Replayed BFGS.Analysis.PolynomialBridge
+ℹ [8759/8792] Replayed BFGS.Analysis.PolynomialBridge
 info: BFGS/Analysis/PolynomialBridge.lean:310:2: Try this:
   [apply] ring_nf
   
   The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
     
   Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
-✔ [8769/8792] Built BFGS.Analysis.Iteration (32s)
-✔ [8770/8792] Built BFGS.Analysis.StateSpace (6.6s)
-✔ [8771/8792] Built BFGS.Analysis.UpdateDifferential (7.3s)
-✔ [8772/8792] Built BFGS.Counterexample.StateCoordinates (6.8s)
-✔ [8773/8792] Built BFGS.Analysis.LocalCycleNeighborhood (6.8s)
-✔ [8774/8792] Built BFGS.Analysis.UpdateVariation (6.6s)
-✔ [8775/8792] Built BFGS.Counterexample.Initialization (7.6s)
-✔ [8776/8792] Built BFGS.Counterexample.Neighborhood (7.6s)
-✔ [8777/8792] Built BFGS.Counterexample.DerivativeCore (9.0s)
-✔ [8778/8792] Built BFGS.Counterexample.Completion (6.9s)
-✔ [8779/8792] Built BFGS.Counterexample.DerivativeLinear (9.5s)
-✔ [8780/8792] Built BFGS.Counterexample.Realization (17s)
-✔ [8781/8792] Built BFGS.Counterexample.ReturnBridge (13s)
-✔ [8782/8792] Built BFGS.Counterexample.Certificates.DerivativeTrace0 (38s)
-ℹ [8783/8792] Built BFGS.Counterexample.Certificates.DerivativeTrace1 (39s)
+ℹ [8782/8792] Replayed BFGS.Counterexample.Certificates.DerivativeTrace1
 info: BFGS/Counterexample/Certificates/DerivativeTrace1.lean:59:566: Try this:
   [apply] ring_nf
   
   The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
     
   Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
-✔ [8784/8792] Built BFGS.Counterexample.Certificates.DerivativeMatrices (30s)
-✔ [8785/8792] Built BFGS.Counterexample.Certificates.DerivativeTrace3 (46s)
-✔ [8786/8792] Built BFGS.Counterexample.PhaseDynamics (36s)
-✔ [8787/8792] Built BFGS.Counterexample.Certificates.DerivativeTrace2 (64s)
-✔ [8788/8792] Built BFGS.Counterexample.Derivative (14s)
-✔ [8789/8792] Built BFGS.Counterexample.Stability (6.7s)
-✔ [8790/8792] Built BFGS.Counterexample.FailureBasin (5.5s)
-✔ [8791/8792] Built BFGS.MainTheorem (5.3s)
+✔ [8786/8792] Built BFGS.Counterexample.Realization (36s)
+✔ [8787/8792] Built BFGS.Counterexample.PhaseDynamics (18s)
+✔ [8788/8792] Built BFGS.Counterexample.Derivative (8.2s)
+✔ [8789/8792] Built BFGS.Counterexample.Stability (6.8s)
+✔ [8790/8792] Built BFGS.Counterexample.FailureBasin (10s)
+✔ [8791/8792] Built BFGS.MainTheorem (5.9s)
 Build completed successfully (8792 jobs).
 Source hygiene and import closure passed: 63 current modules, 24 reusable modules.
 Lean 4.33.1; using existing dependency cache (no Lake).

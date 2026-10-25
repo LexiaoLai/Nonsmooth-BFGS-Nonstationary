@@ -4,12 +4,14 @@ Verification supplement for:
 
 > Lexiao Lai. [*BFGS can converge to non-Clarke-stationary points with positive probability*](BFGS%20can%20converge%20to%20non-Clarke-stationary%20points%20with%20positive%20probability.pdf). Manuscript, 2026.
 
-This repository contains the manuscript, the Lean proof, and the self-contained Python notebook
+This repository contains the manuscript PDF, the Lean proof, and the self-contained Python notebook
 for a coercive, locally Lipschitz, semialgebraic objective on R² for which BFGS
 converges to a non-Clarke-stationary point from an open set of initial states.
 The result covers every Armijo–Wolfe parameter pair
 `0 < c₁ ≤ 0.03` and `0.6 ≤ c₂ < 1` on the same open set, and gives positive
 failure probability under the Gaussian/Wishart initialization law.
+
+Manuscript TeX and bibliography sources are not part of this supplement.
 
 ## Start here
 

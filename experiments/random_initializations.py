@@ -130,7 +130,7 @@ def render(summary, records, reference, output):
         ax.margins(y=.08)
     axes[1].set(yscale='linear', ylabel=r'$f(x^k)$')
     axes[1].set_yticks([-10, -5, 0])
-    axes[2].set(yscale='log', ylabel=r'$\|x^k\|_2$',
+    axes[2].set(yscale='log', ylabel=r'$\|x^k\|$',
                 ylim=(min(norms)*.5, max(norms)*2))
     axes[2].yaxis.set_major_locator(LogLocator(base=10, numticks=5))
     for ax in axes:

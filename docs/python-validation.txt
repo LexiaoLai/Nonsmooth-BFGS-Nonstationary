@@ -14,15 +14,14 @@ test_too_small_published_gamma_is_rejected (test_notebook_consistency.NotebookCo
 test_too_small_published_interval_is_rejected (test_notebook_consistency.NotebookConsistencyTests.test_too_small_published_interval_is_rejected) ... ok
 test_changed_H1_is_rejected (test_symbolic_cycle.SymbolicCycleTests.test_changed_H1_is_rejected) ... ok
 test_changed_position_is_rejected (test_symbolic_cycle.SymbolicCycleTests.test_changed_position_is_rejected) ... ok
-test_cli_runs_outside_repository_without_writing_files (test_symbolic_cycle.SymbolicCycleTests.test_cli_runs_outside_repository_without_writing_files) ... ok
-test_full_certificate_has_exact_zero_remainders_and_safe_divisors (test_symbolic_cycle.SymbolicCycleTests.test_full_certificate_has_exact_zero_remainders_and_safe_divisors) ... ok
+test_cli_certifies_named_identities_without_writing_files (test_symbolic_cycle.SymbolicCycleTests.test_cli_certifies_named_identities_without_writing_files) ... ok
 test_original_divisor_rejects_a_hidden_cancelled_pole (test_symbolic_cycle.SymbolicCycleTests.test_original_divisor_rejects_a_hidden_cancelled_pole) ... ok
 test_uncancelled_pole_and_float_are_rejected (test_symbolic_cycle.SymbolicCycleTests.test_uncancelled_pole_and_float_are_rejected) ... ok
 test_zero_curvature_is_rejected_before_update_division (test_symbolic_cycle.SymbolicCycleTests.test_zero_curvature_is_rejected_before_update_division) ... ok
 test_algebraic_arithmetic (test_verifier.CertificateTests.test_algebraic_arithmetic) ... ok
 test_bridge_rejects_nonmonotone_data (test_verifier.CertificateTests.test_bridge_rejects_nonmonotone_data) ... ok
 test_changed_matrix_is_rejected (test_verifier.CertificateTests.test_changed_matrix_is_rejected) ... ok
-test_full_certificate (test_verifier.CertificateTests.test_full_certificate) ... ok
+test_full_certificate_and_output_rounding (test_verifier.CertificateTests.test_full_certificate_and_output_rounding) ... ok
 test_identity_bridge_rejects_exact_zero_margin (test_verifier.CertificateTests.test_identity_bridge_rejects_exact_zero_margin) ... ok
 test_interval_containment (test_verifier.CertificateTests.test_interval_containment) ... ok
 test_least_bridge_rejects_earlier_indices (test_verifier.CertificateTests.test_least_bridge_rejects_earlier_indices) ... ok
@@ -31,7 +30,7 @@ test_reject_unsafe_inputs (test_verifier.CertificateTests.test_reject_unsafe_inp
 test_shifted_root_box_is_rejected (test_verifier.CertificateTests.test_shifted_root_box_is_rejected) ... ok
 
 ----------------------------------------------------------------------
-Ran 22 tests in 5.999s
+Ran 21 tests in 5.967s
 
 OK
 All requested checks passed.

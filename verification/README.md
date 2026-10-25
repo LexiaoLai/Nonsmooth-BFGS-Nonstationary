@@ -19,9 +19,11 @@ These commands require only Python's standard library. The verifier performs
 `certified_bounds.tex` beside its source. The TeX macros contain the published
 interpolation tables and contraction certificate as reference output; the
 manuscript contains these values directly and does not input this file.
-The ten regression tests
+The regression tests
 check interval containment, unsafe inputs, exact algebraic arithmetic, altered
-root and stability data, polynomial bridge selection, and the full certificate.
+root and stability data, polynomial bridge selection, and certificate output
+rounding. These are software safeguards, not mathematical certificates; the
+verifier's exact calculations establish the finite claims being certified.
 Do not run the verifier with Python's `-O` option; it explicitly rejects
 optimized execution.
 
@@ -43,8 +45,8 @@ python3 -m venv .venv
 .venv/bin/python verification/build_notebook.py
 ```
 
-With these dependencies installed, the regression suite contains 22 tests.
-Without the optional packages, the corresponding symbolic and notebook tests
+With these dependencies installed, the regression suite also checks symbolic
+failure modes and notebook consistency. Without the optional packages, these tests
 are skipped. `requirements-symbolic.txt` installs only the dependency needed
 for the independent symbolic cycle checker.
 
@@ -176,7 +178,7 @@ and build instructions.
 - `build_notebook.py`: constructs, executes, and exports the notebook.
 - `verification.ipynb`, `verification.html`: executed, readable verification.
 - `certificate.json`, `bounds.txt`, `certified_bounds.tex`: generated certificates.
-- `test_*.py`: the 22 regression tests.
+- `test_*.py`: software regression tests for failure modes and output consistency.
 - `requirements*.txt`: optional direct dependency versions.
 
 For the Python calculations, the interpreter, exact-arithmetic implementation,

@@ -136,7 +136,8 @@ private theorem nodeStep (br : Fin 2) (i : ℕ) (hi : i < 5) :
       exact ⟨hi.1, by linarith [hi.2]⟩
     · norm_num [nodeT,nodeEta,nodeD,firstPhase,lastPhase]
 
-/-- The manuscript's deterministic least-degree polynomial construction. -/
+/-- The supplement's deterministic least-degree polynomial realization of
+the manuscript's interpolation data. -/
 def profileData (br : Fin 2) :=
   canonicalProfile 5 (nodeT br) (nodeEta br) (nodeD br) (nodeK br) (1/100)
     (by norm_num [nodeD]) rfl rfl (nodeStep br)

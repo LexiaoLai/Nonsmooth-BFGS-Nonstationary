@@ -41,9 +41,9 @@ by Git:
 | `random_initializations.json` | Figure 2 parameters and computed summary |
 | `random_initializations.runs.json.gz` | Complete recorded runs and reference run |
 
-No saved numerical output is used as an input. Both scripts and their
-Python dependencies suffice to regenerate the figures; neither reads the
-manuscript source, external research files, or certificate outputs.
+No saved numerical output is used as an input. With the LaTeX rendering tools
+listed above, both scripts and their Python dependencies regenerate the figures;
+neither reads the manuscript source, external research files, or certificate outputs.
 
 ## Experimental parameters
 

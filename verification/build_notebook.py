@@ -49,7 +49,7 @@ def make_notebook():
         the manuscript's notation, with superscripts for iterations and
         subscripts for coordinates. Section 4 additionally
         specifies the polynomial realization used in the figures and Lean
-        proof; the manuscript uses Manni's result for interpolation existence.
+        proof; the manuscript uses the interpolation result in [1] for existence.
         It needs SymPy and IPython; it reads no project files or saved results.
         Formulas, matrices and tables use native Jupyter LaTeX outputs.
         Identities
@@ -472,8 +472,8 @@ def make_notebook():
         conditions in Lemma 2.6 and the prescribed
         data in Lemma 2.10, Section 2.2.
 
-        The manuscript proves interpolation existence using Manni's
-        parametric construction. The figures and Lean proof use the
+        The manuscript proves interpolation existence using the parametric
+        construction in [1, Sections 4.1–4.2]. The figures and Lean proof use the
         following independent polynomial construction satisfying the same
         conditions. These additional checks identify that concrete
         realization; its formula is not needed for the manuscript proof.
@@ -626,6 +626,12 @@ def make_notebook():
         equation(r'\|SAS^{-1}\|_\infty\le\max_{1\le i\le4}\sum_{j=1}^4\Gamma_{ij}='
                  +decimal_bound(max(rows),3)+r'<0.78<1')
         print('PASS: every entry of Γ in (A.11) and every row sum in (A.12) has been verified.')
+        """),
+        markdown(r"""
+        ## Reference
+
+        [1] C. Manni. On shape preserving $C^2$ Hermite interpolation.
+        *BIT Numerical Mathematics*, **41**(1), 127–148 (2001).
         """),
     ]
     notebook=nbformat.v4.new_notebook(cells=cells,metadata={

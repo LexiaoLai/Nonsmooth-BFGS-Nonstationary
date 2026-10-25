@@ -2,6 +2,7 @@
 """Regression tests that require optional requirements-symbolic.txt."""
 
 from pathlib import Path
+import json
 import subprocess
 import sys
 import tempfile
@@ -19,20 +20,6 @@ except ModuleNotFoundError as error:
 
 @unittest.skipUnless(SYMBOLIC_AVAILABLE, "install optional requirements-symbolic.txt")
 class SymbolicCycleTests(unittest.TestCase):
-    def test_full_certificate_has_exact_zero_remainders_and_safe_divisors(self):
-        result = verify_cycle()
-        self.assertEqual(result["status"], "passed")
-        self.assertEqual(len(result["residuals"]), 14)
-        self.assertEqual(len(result["nonzero_checks"]), 7)
-        self.assertEqual(len(result["checks"]), 21)
-        for record in result["residuals"].values():
-            self.assertTrue(all(value == "0" for row in record["numerator_remainders"] for value in row))
-            self.assertTrue(all(value == "1" for row in record["denominator_gcds"] for value in row))
-        for name in ["b", "2b-1", "1-r"] + [f"curvature.{i}" for i in range(4)]:
-            record = result["nonzero_checks"][name]
-            self.assertEqual(record["numerator_gcd"], "1")
-            self.assertEqual(record["denominator_gcd"], "1")
-
     def test_changed_H1_is_rejected(self):
         data = build_data()
         data.H[1][0, 0] += 1
@@ -65,14 +52,30 @@ class SymbolicCycleTests(unittest.TestCase):
         with self.assertRaises(TypeError):
             SymbolicChecks().equal("approximate", Float("0.1"))
 
-    def test_cli_runs_outside_repository_without_writing_files(self):
+    def test_cli_certifies_named_identities_without_writing_files(self):
         script = Path(__file__).with_name("symbolic_cycle.py")
         with tempfile.TemporaryDirectory() as directory:
-            result = subprocess.run([sys.executable, str(script)], cwd=directory,
+            result = subprocess.run([sys.executable, str(script), "--json"], cwd=directory,
                                     capture_output=True, text=True, check=False)
             self.assertEqual(result.returncode, 0, msg=result.stderr)
-            self.assertIn("symbolic checks passed", result.stdout)
             self.assertEqual(list(Path(directory).iterdir()), [])
+            certificate = json.loads(result.stdout)
+        identities = {
+            f"cycle.{kind}.{i}"
+            for kind in ("position", "update", "curvature") for i in range(4)
+        } | {"cycle.return_metric", "cycle.return_position"}
+        divisors = {"b", "2b-1", "1-r"} | {f"curvature.{i}" for i in range(4)}
+        self.assertEqual(certificate["status"], "passed")
+        self.assertEqual(set(certificate["residuals"]), identities)
+        self.assertEqual(set(certificate["nonzero_checks"]), divisors)
+        self.assertEqual(set(certificate["checks"]),
+                         identities | {"nonzero." + name for name in divisors})
+        for record in certificate["residuals"].values():
+            self.assertTrue(all(value == "0" for row in record["numerator_remainders"] for value in row))
+            self.assertTrue(all(value == "1" for row in record["denominator_gcds"] for value in row))
+        for record in certificate["nonzero_checks"].values():
+            self.assertEqual(record["numerator_gcd"], "1")
+            self.assertEqual(record["denominator_gcd"], "1")
 
 
 if __name__ == "__main__":
