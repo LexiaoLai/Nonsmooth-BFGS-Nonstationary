@@ -3,6 +3,9 @@ import BFGS.Counterexample.FailureBasin
 /-!
 # Failure of Clarke stationarity on an open set
 
+Paper: Lexiao Lai, *BFGS can converge to non-Clarke-stationary points with
+positive probability*, [arXiv:2610.34087](https://arxiv.org/abs/2610.34087), 2026.
+
 This file assembles Theorem 1.1 and the probability remark that
 follows it. All hypotheses are discharged by the imported construction.
 
