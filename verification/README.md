@@ -1,8 +1,8 @@
 # Python and notebook verification
 
 This directory contains the exact arithmetic verifier, an independent symbolic
-cycle check, and a self-contained executed Jupyter notebook for the BFGS
-counterexample. The [repository README](../README.md) describes the mathematical
+cycle check, and a self-contained executed Jupyter notebook for the
+[BFGS counterexample](https://arxiv.org/abs/2610.34087). The [repository README](../README.md) describes the mathematical
 result and the accompanying Lean verification.
 
 ## Quick checks

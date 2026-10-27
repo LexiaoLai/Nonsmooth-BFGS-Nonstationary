@@ -44,6 +44,8 @@ def make_notebook():
         markdown(r"""
         # Verification of the BFGS counterexample
 
+        Paper: Lexiao Lai. [*BFGS can converge to non-Clarke-stationary points with positive probability*](https://arxiv.org/abs/2610.34087). arXiv:2610.34087, 2026.
+
         Run the cells in order. This self-contained notebook defines the data
         once and checks each certificate once. The displayed quantities use
         the manuscript's notation, with superscripts for iterations and
