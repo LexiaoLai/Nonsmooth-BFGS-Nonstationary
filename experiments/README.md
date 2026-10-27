@@ -1,7 +1,7 @@
 # Reproducing Figures 1 and 2
 
 These scripts evaluate one explicit realization of the objective in
-Theorem 1.1 and run BFGS with the manuscript's strict Armijo–Wolfe line
+Theorem 1.1 of the [paper](https://arxiv.org/abs/2610.34087) and run BFGS with its strict Armijo–Wolfe line
 search. They supply every function value and gradient from the objective;
 no iterate or inverse-Hessian estimate is reset to the prescribed cycle.
 
