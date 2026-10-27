@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use this verification supplement, please cite it using this metadata."
+message: "If you use this work, please cite the paper below. Software metadata for the verification supplement is also provided."
 type: software
 title: "BFGS can converge to non-Clarke-stationary points with positive probability: verification supplement"
 authors:
@@ -10,3 +10,13 @@ version: 0.1.0
 license: MIT
 repository-code: "https://github.com/LexiaoLai/Nonsmooth-BFGS-Nonstationary"
 url: "https://github.com/LexiaoLai/Nonsmooth-BFGS-Nonstationary"
+preferred-citation:
+  type: article
+  title: "BFGS can converge to non-Clarke-stationary points with positive probability"
+  authors:
+    - family-names: Lai
+      given-names: Lexiao
+  year: 2026
+  journal: arXiv
+  doi: "10.48550/arXiv.2610.34087"
+  url: "https://arxiv.org/abs/2610.34087"

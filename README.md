@@ -2,7 +2,7 @@
 
 Verification supplement for:
 
-> Lexiao Lai. [*BFGS can converge to non-Clarke-stationary points with positive probability*](BFGS%20can%20converge%20to%20non-Clarke-stationary%20points%20with%20positive%20probability.pdf). Manuscript, 2026.
+> Lexiao Lai. [*BFGS can converge to non-Clarke-stationary points with positive probability*](https://arxiv.org/abs/2610.34087). arXiv:2610.34087, 2026.
 
 This repository contains the manuscript PDF, the Lean proof, and the self-contained Python notebook
 for a coercive, locally Lipschitz, semialgebraic objective on R² for which BFGS
@@ -15,7 +15,7 @@ Manuscript TeX and bibliography sources are not part of this supplement.
 
 ## Start here
 
-- [Manuscript PDF](BFGS%20can%20converge%20to%20non-Clarke-stationary%20points%20with%20positive%20probability.pdf).
+- [Paper on arXiv](https://arxiv.org/abs/2610.34087) and [bundled manuscript PDF](BFGS%20can%20converge%20to%20non-Clarke-stationary%20points%20with%20positive%20probability.pdf).
 - [Executed notebook](verification/verification.ipynb): exact cycle identities,
   interval bounds, and the published tables and contraction certificate.
 - [Offline HTML notebook](verification/verification.html): download and open
@@ -121,4 +121,18 @@ The original code, notebooks, and accompanying software documentation are
 licensed under the [MIT License](LICENSE). This license does not apply to
 the [manuscript PDF](BFGS%20can%20converge%20to%20non-Clarke-stationary%20points%20with%20positive%20probability.pdf), whose rights remain with the author.
 Third-party dependencies retain their respective licenses.
-Citation metadata for the verification supplement is in [CITATION.cff](CITATION.cff).
+Citation metadata for the paper and verification supplement is in
+[CITATION.cff](CITATION.cff). To cite the paper:
+
+```bibtex
+@misc{lai2026bfgs,
+  author        = {Lexiao Lai},
+  title         = {{BFGS} can converge to non-{Clarke}-stationary points with positive probability},
+  year          = {2026},
+  eprint        = {2610.34087},
+  archivePrefix = {arXiv},
+  primaryClass  = {math.OC},
+  doi           = {10.48550/arXiv.2610.34087},
+  url           = {https://arxiv.org/abs/2610.34087}
+}
+```
