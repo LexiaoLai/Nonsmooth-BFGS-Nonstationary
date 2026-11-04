@@ -5,7 +5,7 @@ import Mathlib
 
 This is the invariant-neighborhood and convergence argument in Step 3 of
 Lemma 2.12 of the manuscript. The hypotheses are the
-one-step bounds (2.31). No differentiability is needed
+one-step bounds (2.39). No differentiability is needed
 here: the derivative argument supplies these bounds separately.
 
 The first coordinate records position along the fixed ray; the second

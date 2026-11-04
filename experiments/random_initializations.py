@@ -11,6 +11,7 @@ import argparse
 from decimal import Decimal, localcontext
 import gzip
 import hashlib
+import io
 import json
 from pathlib import Path
 
@@ -49,6 +50,9 @@ def simulate(samples, radius, steps, seed, precision=200):
                 assert all(rows[j+1]['f'] <= rows[j]['f'] for j in range(steps))
                 record.update(status='completed', run=run)
                 record['near_origin'] = rows[-1]['norm'] < 1e-9
+                final_point = list(map(Decimal,run['final_position']))
+                record['distance_to_boundary_minimizer'] = str(
+                    (final_point[0]**2+(final_point[1]+10)**2).sqrt())
             except (ArithmeticError, AssertionError) as error:
                 record.update(status='numerical_error', error=repr(error), near_origin=False)
             records.append(record)
@@ -73,6 +77,9 @@ def simulate(samples, radius, steps, seed, precision=200):
                                             max(abs(item['run']['rows'][-1]['f']) for item in near)] if near else None,
             'other_final_norm_range': [min(item['run']['rows'][-1]['norm'] for item in other),
                                        max(item['run']['rows'][-1]['norm'] for item in other)] if other else None,
+            'other_reference_point': [0, -10],
+            'other_distance_to_reference_range': [str(min(Decimal(item['distance_to_boundary_minimizer']) for item in other)),
+                                                  str(max(Decimal(item['distance_to_boundary_minimizer']) for item in other))] if other else None,
             'figure': {'panels': ['initial-position perturbations in original units',
                                   'signed objective value', 'iterate Euclidean norm'],
                        'vertical_scales': ['linear', 'linear', 'log'],
@@ -88,7 +95,7 @@ def render(summary, records, reference, output):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
-    from matplotlib.ticker import LogLocator
+    from matplotlib.ticker import LogLocator, MaxNLocator
 
     plt.rcParams.update({'text.usetex': True, 'font.family': 'serif',
                         'font.serif': ['Computer Modern Roman'], 'font.size': 11.5,
@@ -127,21 +134,26 @@ def render(summary, records, reference, output):
         ax.grid(axis='y', alpha=.18, lw=.6)
         ax.margins(y=.08)
     axes[1].set(yscale='linear', ylabel=r'$f(x^k)$')
-    axes[1].set_yticks([-10, -5, 0])
+    axes[1].yaxis.set_major_locator(MaxNLocator(4))
     axes[2].set(yscale='log', ylabel=r'$\|x^k\|$',
                 ylim=(min(norms)*.5, max(norms)*2))
     axes[2].yaxis.set_major_locator(LogLocator(base=10, numticks=5))
     for ax in axes:
         ax.spines[['top', 'right']].set_visible(False)
     for extension in ['pdf', 'png']:
-        fig.savefig(output.with_suffix('.'+extension), dpi=240)
+        buffer = io.BytesIO()
+        fig.savefig(buffer,format=extension,dpi=240)
+        target = output.with_suffix('.'+extension)
+        temporary = target.with_name('.'+target.name)
+        temporary.write_bytes(buffer.getvalue())
+        temporary.replace(target)
     plt.close(fig)
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--samples', type=int, default=100)
-    parser.add_argument('--radius', type=float, default=1e-9)
+    parser.add_argument('--radius', type=float, default=2e-7)
     parser.add_argument('--steps', type=int, default=1000)
     parser.add_argument('--precision', type=int, default=200)
     parser.add_argument('--seed', type=int, default=20261025)

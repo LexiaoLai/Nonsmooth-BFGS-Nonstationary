@@ -9,7 +9,8 @@ positive probability*, [arXiv:2610.34087](https://arxiv.org/abs/2610.34087), 202
 This file assembles Theorem 1.1 and the probability remark that
 follows it. All hypotheses are discharged by the imported construction.
 
-* `f` is the constructed homogeneous objective plus the coercive modification
+* `f` uses one shared univariate interpolant on both half-planes, followed
+  by the coercive modification
   `max 0 (x₁² + x₂² - 100)` from Section 2.4.
 * `UniformFailureRun f ω` means that one infinite orbit is the actual BFGS run
   from `ω` for every `0 < c₁ ≤ 0.03` and `0.6 ≤ c₂ < 1`. The gradients exist,

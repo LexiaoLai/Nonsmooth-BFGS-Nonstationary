@@ -75,15 +75,14 @@ definite inverse-Hessian estimate to vary.
   probability results.
 - `BFGS/Arithmetic/`: sound rational interval arithmetic.
 
-Every included Lean source is in the import closure of `BFGS.lean`. The old
-construction's numerical certificates and their unused concrete lemmas have
-been removed by narrowing overly broad imports.
+Every included Lean source is in the import closure of `BFGS.lean`.
 
 ## Proof map and differences in presentation
 
-- Lemma 2.3: `Counterexample/Root.lean` proves root
-  existence and uniqueness, including the interval
-  `(0.91781039164, 0.91781039165)` used in Appendix A.
+- Lemma 2.4: `Counterexample/Root.lean` proves existence and uniqueness
+  directly in `(0.91781039164, 0.91781039165)`, using exact endpoint signs
+  and a derivative lower bound on that interval. Appendix A recalls this
+  enclosure; membership in the broader interval is an immediate consequence.
 - Lemma 2.5: `Counterexample/Algebra.lean` and `Cycle.lean`
   prove the exact updates, positive curvature and return factor `64/81`.
 - Propositions 2.7–2.9:
@@ -100,11 +99,20 @@ been removed by narrowing overly broad imports.
   convergence and positive probability; `MainTheorem.lean` assembles them.
 
 The manuscript invokes a classical interpolation theorem. Lean instead
-constructs a polynomial interpolant explicitly with the same prescribed
-values and derivatives and the required positive derivative bound. This
+constructs one piecewise-polynomial interpolant explicitly for the ordered data
+`-2, -1, t², t⁰, t³, t¹, 6, 7`, with the same prescribed values and
+derivatives and the required positive derivative bound. The same function
+is used on both half-planes in `F(z) = |z₁| h(z₂/|z₁|)`. This
 supplies a concrete witness for the manuscript's existence result; it does
 not formalize the cited interpolation theorem. Section 4 of the self-contained
 [notebook](../verification/verification.ipynb) presents the explicit witness.
+
+`Realization.f_eq_single_profile` gives this formula in the original
+coordinates, where `z₁ = x₁ - x₂/20` and `z₂ = x₂`.
+The general two-interpolant calculus lemmas are instantiated with the same
+interpolant in both arguments. The merged interpolation inequalities are
+proved from the kernel-checked scalar enclosures; no Python result is
+assumed in this step.
 
 The realization proves the needed instance with Hessian coefficients
 `(1.9,1.6,-4.1,0.2)`. It does not separately package every arbitrary-coefficient
@@ -136,17 +144,9 @@ physical BFGS iterates in Section 2.4.
 Lean never treats Python results or saved notebook output as hypotheses.
 Its kernel checks the rational interval proofs and their connection to the
 BFGS derivative. The Python verifier and notebook reproduce these finite
-bounds independently. Regenerate the interval traces with:
-
-```sh
-python3 verification/generate_lean.py
-python3 verification/generate_lean_bounds.py
-```
-
-The generators are untrusted: their output is ordinary Lean proof source.
-The generated trace metadata is needed by the bounds generator. Algebraic
-bridge and derivative proofs are checked-in Lean sources, not additional
-assumptions or external arithmetic results.
+bounds independently. The arithmetic traces, algebraic identities, and
+connections to the BFGS derivative are included as Lean proof sources and
+are checked together with the main theorem.
 
 The source checker rejects `sorry`, `admit`, added `axiom` declarations,
 `native_decide`, `sorryAx`, and options disabling kernel or native type

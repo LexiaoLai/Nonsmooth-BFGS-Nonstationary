@@ -1,10 +1,11 @@
 import Mathlib
 
 /-!
-# Lemma 2.3: the admissible scalar root
+# Lemma 2.4: the admissible scalar root
 
-The quartic and both rational intervals are those in
-the accompanying manuscript and its certificate appendix.
+The quartic is equation (2.12). Lemma 2.4 isolates its unique root directly
+in the narrow interval, recalled as Y in equation (A.2). The broader bounds
+used later follow immediately from this interval.
 All endpoint values and bounds below are proved by exact arithmetic in Lean.
 -/
 namespace BFGS.Counterexample
@@ -30,22 +31,6 @@ theorem quartic_continuous : Continuous quartic := by
   unfold quartic
   fun_prop
 
-theorem quartic_broad_lower_value :
-    quartic (9178 / 10000) = -360567061886079 / 156250000000000 := by
-  norm_num [quartic]
-
-theorem quartic_broad_upper_value :
-    quartic (9179 / 10000) = 49786738620570561 / 2500000000000000 := by
-  norm_num [quartic]
-
-theorem quartic_broad_lower_neg : quartic (9178 / 10000) < -2 := by
-  rw [quartic_broad_lower_value]
-  norm_num
-
-theorem quartic_broad_upper_pos : 19 < quartic (9179 / 10000) := by
-  rw [quartic_broad_upper_value]
-  norm_num
-
 theorem quartic_narrow_lower_value :
     quartic (91781039164 / 10 ^ 11) =
       -92800728762779521514562900663010959 /
@@ -66,29 +51,29 @@ theorem quartic_narrow_upper_pos : 0 < quartic (91781039165 / 10 ^ 11) := by
   rw [quartic_narrow_upper_value]
   norm_num
 
-/-- The manuscript's exact lower bound for the derivative throughout the broad box. -/
-theorem quarticDeriv_broad_lower (b : ℝ)
-    (hb : b ∈ Set.Icc (9178 / 10000 : ℝ) (9179 / 10000)) :
+/-- The derivative bound used in Lemma 2.4, evaluated on its narrow interval. -/
+theorem quarticDeriv_narrow_lower (b : ℝ)
+    (hb : b ∈ Set.Icc (91781039164 / 10 ^ 11 : ℝ) (91781039165 / 10 ^ 11)) :
     200000 < quarticDeriv b := by
   have hb0 : 0 ≤ b := by linarith [hb.1]
-  have hcub := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 9178 / 10000) hb.1 3
+  have hcub := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 91781039164 / 10 ^ 11) hb.1 3
   have hsq := pow_le_pow_left₀ hb0 hb.2 2
   have hbound : (200000 : ℝ) <
-      3111696 * (9178 / 10000 : ℝ) ^ 3 -
-        1729896 * (9179 / 10000 : ℝ) ^ 2 -
-          1175330 * (9179 / 10000 : ℝ) + 352256 := by norm_num
+      3111696 * (91781039164 / 10 ^ 11 : ℝ) ^ 3 -
+        1729896 * (91781039165 / 10 ^ 11 : ℝ) ^ 2 -
+          1175330 * (91781039165 / 10 ^ 11 : ℝ) + 352256 := by norm_num
   dsimp [quarticDeriv]
   nlinarith [hb.2]
 
-theorem quartic_strictMonoOn :
-    StrictMonoOn quartic (Set.Icc (9178 / 10000 : ℝ) (9179 / 10000)) := by
+theorem quartic_strictMonoOn_narrow :
+    StrictMonoOn quartic (Set.Icc (91781039164 / 10 ^ 11 : ℝ) (91781039165 / 10 ^ 11)) := by
   apply strictMonoOn_of_deriv_pos (convex_Icc _ _) quartic_continuous.continuousOn
   intro b hb
   rw [(quartic_hasDerivAt b).deriv]
-  have h := quarticDeriv_broad_lower b (interior_subset hb)
+  have h := quarticDeriv_narrow_lower b (interior_subset hb)
   linarith
 
-/-- The refined interval contains an actual real zero, strictly inside its endpoints. -/
+/-- The endpoint signs give a root strictly inside the interval in Lemma 2.4. -/
 theorem exists_root_narrow :
     ∃ b : ℝ, b ∈ Set.Ioo (91781039164 / 10 ^ 11 : ℝ)
       (91781039165 / 10 ^ 11) ∧ quartic b = 0 := by
@@ -109,6 +94,20 @@ theorem root_mem_narrow :
 theorem root_quartic : quartic root = 0 :=
   (Classical.choose_spec exists_root_narrow).2
 
+theorem root_unique_narrow (b : ℝ)
+    (hb : b ∈ Set.Icc (91781039164 / 10 ^ 11 : ℝ) (91781039165 / 10 ^ 11))
+    (hz : quartic b = 0) : b = root :=
+  quartic_strictMonoOn_narrow.injOn hb root_mem_narrow
+    (hz.trans root_quartic.symm)
+
+/-- The existence and uniqueness statement of Lemma 2.4. -/
+theorem existsUnique_root_narrow :
+    ∃! b : ℝ, b ∈ Set.Ioo (91781039164 / 10 ^ 11 : ℝ)
+      (91781039165 / 10 ^ 11) ∧ quartic b = 0 :=
+  ⟨root, ⟨root_mem_narrow_open, root_quartic⟩,
+    fun b hb => root_unique_narrow b (Set.Ioo_subset_Icc_self hb.1) hb.2⟩
+
+/-- The broader bound used in later estimates follows from Lemma 2.4. -/
 theorem root_mem_broad :
     root ∈ Set.Ioo (9178 / 10000 : ℝ) (9179 / 10000) := by
   have h := root_mem_narrow
@@ -119,18 +118,6 @@ theorem root_half_lt : (1 / 2 : ℝ) < root := by linarith [root_mem_broad.1]
 theorem root_pos : 0 < root := by linarith [root_half_lt]
 
 theorem root_ne_zero : root ≠ 0 := ne_of_gt root_pos
-
-theorem root_unique (b : ℝ)
-    (hb : b ∈ Set.Icc (9178 / 10000 : ℝ) (9179 / 10000))
-    (hz : quartic b = 0) : b = root :=
-  quartic_strictMonoOn.injOn hb (Set.Ioo_subset_Icc_self root_mem_broad)
-    (hz.trans root_quartic.symm)
-
-/-- The existence and uniqueness statement appearing in the manuscript. -/
-theorem existsUnique_root_broad :
-    ∃! b : ℝ, b ∈ Set.Ioo (9178 / 10000 : ℝ) (9179 / 10000) ∧ quartic b = 0 :=
-  ⟨root, ⟨root_mem_broad, root_quartic⟩,
-    fun b hb => root_unique b (Set.Ioo_subset_Icc_self hb.1) hb.2⟩
 
 end
 end BFGS.Counterexample

@@ -32,7 +32,7 @@ theorem scalar_radial_bound (g : E → ℝ) (hg : DifferentiableAt ℝ g 0) :
     _ ≤ ‖u‖+‖A‖*‖u‖ := add_le_add hh (A.le_opNorm _)
     _ = (1+‖A‖)*‖u‖ := by ring
 
-/-- The transverse and longitudinal estimates (2.31) for a homogeneous
+/-- The transverse and longitudinal estimates (2.39) for a homogeneous
 return map. Only the derivative at the base point is needed. -/
 theorem fixed_ray_local_bounds
     (F : ℝ × E → ℝ × E) (A : E →L[ℝ] E)

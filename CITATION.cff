@@ -6,7 +6,8 @@ authors:
   - family-names: Lai
     given-names: Lexiao
     affiliation: "Department of Mathematics, The University of Hong Kong"
-version: 0.1.0
+version: 0.2.0
+date-released: 2026-11-04
 license: MIT
 repository-code: "https://github.com/LexiaoLai/Nonsmooth-BFGS-Nonstationary"
 url: "https://github.com/LexiaoLai/Nonsmooth-BFGS-Nonstationary"

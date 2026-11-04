@@ -1,0 +1,64 @@
+{
+  "purpose": "Pilot radius selection for visual illustration, not statistical inference.",
+  "samples_per_radius": 20,
+  "steps": 1000,
+  "precision_digits": 200,
+  "seed": 20261025,
+  "c1": "0.01",
+  "c2": "0.9",
+  "near_origin_criterion": "At the final iteration: norm(x)<1e-9",
+  "selected_radius": 2e-07,
+  "selection": "Smallest tested radius showing both observed behaviors with a majority near the origin.",
+  "pilots": [
+    {
+      "radius": 1e-08,
+      "near_origin": 20,
+      "other_completed": 0,
+      "numerical_errors": 0
+    },
+    {
+      "radius": 1e-07,
+      "near_origin": 20,
+      "other_completed": 0,
+      "numerical_errors": 0
+    },
+    {
+      "radius": 2e-07,
+      "near_origin": 19,
+      "other_completed": 1,
+      "numerical_errors": 0
+    },
+    {
+      "radius": 3e-07,
+      "near_origin": 18,
+      "other_completed": 2,
+      "numerical_errors": 0
+    },
+    {
+      "radius": 5e-07,
+      "near_origin": 16,
+      "other_completed": 4,
+      "numerical_errors": 0
+    },
+    {
+      "radius": 1e-06,
+      "near_origin": 7,
+      "other_completed": 13,
+      "numerical_errors": 0
+    },
+    {
+      "radius": 1e-05,
+      "near_origin": 0,
+      "other_completed": 20,
+      "numerical_errors": 0
+    },
+    {
+      "radius": 0.0001,
+      "near_origin": 0,
+      "other_completed": 20,
+      "numerical_errors": 0
+    }
+  ],
+  "source_sha256": "972f2677aece6ee3ce519169511a434963cfde389a5bf273f14c27fe4fbb607e",
+  "objective_source_sha256": "d148dba7cd05277549636611fab41a2dc29238254d010cec29b727c4b81489af"
+}

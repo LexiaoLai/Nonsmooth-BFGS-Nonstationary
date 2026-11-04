@@ -21,7 +21,7 @@ def coordinates : TransverseSpace ≃L[ℝ] TransverseSpace :=
 /-- The cycle state `ω_*`. -/
 def baseState : State := embed PhaseDynamics.center
 
-/-- Equation (2.26): the full state is divided by the fixed
+/-- Equation (2.32): the full state is divided by the fixed
 cycle factor `r`, never by one of its coordinates. -/
 def fixedReturn : State → State := FixedScale.returnMap (cycleStep Realization.g) 4 r
 

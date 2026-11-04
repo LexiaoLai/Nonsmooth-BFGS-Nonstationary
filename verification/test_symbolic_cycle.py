@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regression tests that require optional requirements-symbolic.txt."""
+"""Regression tests that require optional requirements-notebook.txt."""
 
 from pathlib import Path
 import json
@@ -18,7 +18,7 @@ except ModuleNotFoundError as error:
     SYMBOLIC_AVAILABLE = False
 
 
-@unittest.skipUnless(SYMBOLIC_AVAILABLE, "install optional requirements-symbolic.txt")
+@unittest.skipUnless(SYMBOLIC_AVAILABLE, "install optional requirements-notebook.txt")
 class SymbolicCycleTests(unittest.TestCase):
     def test_changed_H1_is_rejected(self):
         data = build_data()

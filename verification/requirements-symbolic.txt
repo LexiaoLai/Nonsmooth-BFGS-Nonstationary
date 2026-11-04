@@ -1,2 +1,0 @@
-# Optional independent symbolic checker; verify.py remains standard-library only.
-sympy==1.14.0

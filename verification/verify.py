@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
-"""Exact rational certificates for the algebraic four-step BFGS example.
+"""Exact rational certificates for the single-interpolant BFGS construction.
 
 Run from any working directory. Only Python's standard library is needed.
 All decisive comparisons use Fraction and outward rational intervals.
-Manuscript: Lemmas 2.3 and 2.5; Propositions 2.7--2.9; Appendix A,
+Manuscript: Lemmas 2.4 and 2.5; Propositions 2.7--2.9; Appendix A,
 including Proposition A.1. See docs/manuscript-map.md for the result correspondence.
 """
-from pathlib import Path
 from fractions import Fraction as F
-import json
 import intervals as iv
 from intervals import IV,format_interval
 from polynomial import Algebraic, B, P
@@ -75,7 +73,7 @@ def inverse(a):
     return out,det
 
 def data(b):
-    """Cycle data (2.4)--(2.8), and Hessians (2.21), (2.28)."""
+    """Cycle data (2.4), (2.10), (2.13)--(2.16); Hessians (2.27), (2.34)."""
     rho=F(8,9);r=rho*rho
     p=-9*(882*b*b-463*b-256)/(640*(2*b-1))
     t=-(3087*b*b-2233*b-256)/(320*(2*b-1))
@@ -131,17 +129,17 @@ def calculate(b,expanded):
 
 
 def root_certificate():
-    """Lemma 2.3 and the refined root interval Y in (A.3)."""
-    a,c=COARSE_LO,COARSE_HI
+    """Certify Lemma 2.4 directly on the interval recalled as Y in (A.2)."""
+    a,c=ROOT_LO,ROOT_HI
     pa,pc=poly(a),poly(c)
     derivative=3111696*a*a*a-1729896*c*c-1175330*c+352256
-    require('root.coarse.lower',pa < -2)
-    require('root.coarse.upper',pc > 19)
+    require('root.narrow.order',0<a<c)
+    require('root.narrow.lower',pa<0)
+    require('root.narrow.upper',pc>0)
     require('root.monotonicity',derivative>200000)
-    require('root.narrow.lower',poly(ROOT_LO)<0)
-    require('root.narrow.upper',poly(ROOT_HI)>0)
-    return dict(coarse=[a,c],narrow=[ROOT_LO,ROOT_HI],coarse_values=[pa,pc],
-                derivative_lower=derivative,narrow_values=[poly(ROOT_LO),poly(ROOT_HI)])
+    require('root.coarse.containment',COARSE_LO<a<c<COARSE_HI)
+    return dict(coarse=[COARSE_LO,COARSE_HI],narrow=[a,c],
+                derivative_lower=derivative,narrow_values=[pa,pc])
 
 def update(h,s,y):
     c=dot(s,y);v=ma(eye(2),ms(outer(s,y),-1/c))
@@ -189,8 +187,7 @@ def interpolation_nodes(g,x,K,make_interval=IV):
 
 def interpolation_branches(nodes,outer=False,make_interval=IV):
     anchors=[dict(t=make_interval(-1),eta=make_interval(-1),d=make_interval(1),k=make_interval(0)),dict(t=make_interval(6),eta=make_interval(6),d=make_interval(1),k=make_interval(0))]
-    branches=[(sign,[anchors[0],nodes[indices[0]],nodes[indices[1]],anchors[1]])
-              for sign,indices in [('+',(0,1)),('-',(2,3))]]
+    branches=[('h',[anchors[0],*[nodes[i] for i in (2,0,3,1)],anchors[1]])]
     if outer:
         branches=[(sign,[dict(t=branch[0]['t']-1,eta=branch[0]['eta']-1,d=make_interval(1),k=make_interval(0))]
                    +branch+[dict(t=branch[-1]['t']+1,eta=branch[-1]['eta']+1,d=make_interval(1),k=make_interval(0))])
@@ -202,14 +199,16 @@ def geometry_certificate(b):
     g,H,x,K,r=data(b);nodes,coords=interpolation_nodes(g,x,K);norms=[]
     for i in range(5):
         a,c=x[i];n=a*a+c*c
-        require(f'geometry.norm.{i}',n.lo>0 and n.hi<8)
+        require(f'geometry.norm.{i}',n.lo>F('0.7') and n.hi<8)
         norms.append(n)
     for i in range(4):
         coordinate=coords[i];d=nodes[i]['d'];k=nodes[i]['k']
-        lo,hi=[('1.229','1.234'),('.254','.259'),('-1.122','-1.104'),('-.253','-.240')][i]
+        lo,hi=[('1.1','1.3'),('0.2','0.3'),('-1.2','-1'),('-0.3','-0.2')][i]
         require(f'geometry.displayed_coordinate.{i}',F(lo)<coordinate.lo and coordinate.hi<F(hi))
         if i<2:require(f'geometry.sign.{i}',coordinate.lo>0)
         else:require(f'geometry.sign.{i}',coordinate.hi<0)
+        tlo,thi=[('1.3','1.5'),('4.7','4.9'),('0.2','0.4'),('3.2','3.5')][i]
+        require(f'geometry.slope_range.{i}',F(tlo)<nodes[i]['t'].lo and nodes[i]['t'].hi<F(thi))
         require(f'interpolation.d_lower.{i}',d.lo>F(1,50))
         require(f'interpolation.d_upper.{i}',d.hi<=1)
         # Descriptive instance bound only; the bridge allows arbitrary k.
@@ -219,7 +218,7 @@ def geometry_certificate(b):
         for j,(left,right) in enumerate(zip(branch,branch[1:])):
             ell=right['t']-left['t'];D=right['eta']-left['eta'];secant=D/ell
             require(f'interpolation.gap.{sign}.{j}',ell.lo>1)
-            require(f'interpolation.secant.{sign}.{j}',secant.lo>F(1,2) and secant.hi<2)
+            require(f'interpolation.secant.{sign}.{j}',secant.lo>F('0.016') and secant.hi<2)
             gaps.append(dict(branch=sign,gap=j,length=ell,secant=secant))
     A0=-(158760*b*b*b+163620*b*b-172579*b-103680)/(27200*b)
     A1=(79380*b*b*b+58957*b*b-70380*b-46080)/(13600*b)
@@ -229,7 +228,7 @@ def geometry_certificate(b):
     require('margins.A1',F('.0281')<A1.lo and A1.hi<F('.0312') and A1.lo>F(1,50))
     for i,w in enumerate(wolfe):require(f'margins.W{i}',w.lo>0)
     curv=[dot(neg(mv(H[i],g[i])),sub(g[i+1],g[i])) for i in range(4)]
-    for i,c in enumerate(curv):require(f'curvature.{i}',c.lo>0)
+    for i,c in enumerate(curv):require(f'curvature.{i}',c.lo>F('0.4'))
     return dict(nodes=nodes,gaps=gaps,norm_squared=norms,z1=coords,armijo=armijo,wolfe=wolfe,curvature=curv)
 
 def bridge_parameters(left,right,n,m=F(1,100)):
@@ -296,67 +295,27 @@ def stability_certificate(b):
     require('stability.exact_differentiations',same(ex,fa) and same(prod_ex,prod_fa))
     return dict(matrix=M,magnitude=upper,rows=rows,norm=max(rows),S=S,S_inverse=SI,determinant=det)
 
-def serialize(v):
-    if isinstance(v,IV):return v.out()
-    if isinstance(v,F):return str(v)
-    if isinstance(v,dict):return {k:serialize(x) for k,x in v.items()}
-    if isinstance(v,list):return [serialize(x) for x in v]
-    return v
-
 def verify():
     checks.clear()
     root=root_certificate();cycle=cycle_certificate()
-    # Broad interval is enough for interpolation and line-search margins;
-    # the narrow one certifies the least bridge indices and transverse derivative.
-    geometry=geometry_certificate(IV(COARSE_LO,COARSE_HI))
+    # The same certified root interval supplies the merged interpolation
+    # inequalities, least bridge indices, and transverse derivative.
+    geometry=geometry_certificate(IV(ROOT_LO,ROOT_HI))
     bridges=bridge_certificate(IV(ROOT_LO,ROOT_HI))
     stability=stability_certificate(IV(ROOT_LO,ROOT_HI))
     return dict(config={'bits':iv.BITS,'arithmetic':'Fraction and outward dyadic intervals'},
                 root=root,cycle=cycle,geometry=geometry,bridges=bridges,stability=stability,checks=list(checks))
 
-def tex_number(q):
-    q=F(q)
-    return str(q.numerator) if q.denominator==1 else r'\frac{'+str(q.numerator)+'}{'+str(q.denominator)+'}'
-
-def tex_interval(x,places=4):return format_interval(x,places)
-
-def write_outputs(result,directory=None):
-    directory=Path(__file__).parent if directory is None else Path(directory)
-    directory.mkdir(exist_ok=True,parents=True)
-    (directory/'certificate.json').write_text(json.dumps(serialize(result),indent=2)+'\n')
-    lines=['% Generated by verify.py after all exact checks pass.']
-    def macro(name,value):lines.append('\\newcommand{\\'+name+'}{'+value+'}')
-    macro('BFGSRootInterval',tex_interval(result['root']['narrow'],11))
-    macro('BFGSCheckCount',str(len(result['checks'])))
-    node_rows=[]
-    for i,n in enumerate(result['geometry']['nodes']):
-        node_rows.append(str(i)+' & '+' & '.join(tex_interval(n[k],4) for k in ['t','eta','d'])+r' \\')
-    macro('BFGSNodeRows','\n'.join(node_rows))
-    gap_rows=[]
-    for g in result['geometry']['gaps']:
-        gap_rows.append(g['branch']+' & '+str(g['gap'])+' & '+tex_interval(g['length'],4)+' & '+tex_interval(g['secant'],4)+r' \\')
-    macro('BFGSGapRows','\n'.join(gap_rows))
-    bridge_rows=[]
-    for g in result['bridges']['gaps']:
-        bridge_rows.append(g['branch']+' & '+str(g['gap'])+' & '+str(g['n'])+' & '
-                           +' & '.join(tex_interval(g[k],6) for k in ['L','R','remaining'])+r' \\')
-    macro('BFGSBridgeRows','\n'.join(bridge_rows))
-    macro('BFGSNormRows','\n'.join(str(i)+' & '+tex_interval(n,4)+r' \\' for i,n in enumerate(result['geometry']['norm_squared'])))
+def report(result):
+    """Summarize the freshly computed certificate without writing output files."""
     st=result['stability']
-    macro('BFGSMagnitudeMatrix',r'\begin{pmatrix}'+(r'\\'+'\n').join(' & '.join(iv.decimal_up(v,3) for v in row) for row in st['magnitude'])+r'\end{pmatrix}')
-    macro('BFGSRowBounds','('+r',\,'.join(iv.decimal_up(v,3) for v in st['rows'])+')')
-    macro('BFGSTransverseMatrix',r'\begin{pmatrix}'+(r'\\'+'\n').join(' & '.join(tex_interval(v,6) for v in row) for row in st['matrix'])+r'\end{pmatrix}')
-    (directory/'certified_bounds.tex').write_text('\n'.join(lines)+'\n')
-    report=['All '+str(len(result['checks']))+' exact checks passed.',
-            'Lemma 2.3; Appendix A.2, (A.3): root interval Y = '+tex_interval(result['root']['narrow'],11),
-            'Explicit realization of Lemmas 2.6 and 2.10: bridge indices (+, then -) = '+str([g['n'] for g in result['bridges']['gaps']]),
+    return ['All '+str(len(result['checks']))+' exact checks passed.',
+            'Lemma 2.4; Appendix A, (A.2): root interval Y = '+format_interval(result['root']['narrow'],11),
+            'Explicit realization of Lemmas 2.6 and 2.10: bridge indices (single h, left to right) = '+str([g['n'] for g in result['bridges']['gaps']]),
             'Proposition A.1, (A.12): row-sum bounds = '+str([iv.decimal_up(v,3) for v in st['rows']]),
             'Proposition A.1: certified maximum row sum = '+iv.decimal_up(st['norm'],3),
             'Proposition A.1: contraction bound = '+iv.decimal_up(STABILITY_NORM_BOUND,2),
             'No binary floating-point comparisons are used.']
-    (directory/'bounds.txt').write_text('\n'.join(report)+'\n')
-    return report
 
 if __name__=='__main__':
-    result=verify()
-    print('\n'.join(write_outputs(result)))
+    print('\n'.join(report(verify())))

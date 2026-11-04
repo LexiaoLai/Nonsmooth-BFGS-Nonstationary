@@ -1,4 +1,4 @@
-"""Evaluate the manuscript objective, run BFGS, and regenerate its figure.
+"""Evaluate the single-interpolant objective, run BFGS, and regenerate its figure.
 
 The root and all iterates are approximated with 100-digit Decimal arithmetic.
 These numerical checks illustrate the construction; ../verification/verify.py
@@ -58,7 +58,7 @@ def cycle_data():
     x = [x0,x1,rho*(J.T@x0),rho*(J.T@x1),r*x0]
     Minv = np.array([[D(1),-D(".05")],[D(0),D(1)]],dtype=object)
     beta = list(map(D,["1.9","1.6","-4.1","0.2"]))
-    K, nodes = [], {1:[], -1:[]}
+    K, nodes = [], []
     for i in range(4):
         v = x[i]
         jv = np.array([-v[1],v[0]],dtype=object)
@@ -70,7 +70,7 @@ def cycle_data():
         d = g[i][0]/20+g[i][1]
         direction = np.array([D(".05"),D(1)],dtype=object)
         second = a*(direction@k@direction)
-        nodes[1 if z[0]>0 else -1].append([z[1]/a,eta,d,second])
+        nodes.append([z[1]/a,eta,d,second])
     return {"b":b,"root_residual":polynomial(b),"r":r,"x":x,"g":g,"H":H,
             "K":K,"nodes":nodes,"A":Minv,"beta":beta}
 
@@ -173,7 +173,7 @@ class Example:
         self.dtype = object if decimal else float
         self.data = data
         self.A = np.array([[self.cast(v) for v in row] for row in data["A"]],dtype=self.dtype)
-        self.interpolants = {sign:Interpolant(nodes,self.cast) for sign,nodes in data["nodes"].items()}
+        self.interpolant = Interpolant(data["nodes"],self.cast)
 
     def sqrt(self,v):
         return v.sqrt() if self.decimal else np.sqrt(v)
@@ -192,7 +192,7 @@ class Example:
         else:
             a,sign = abs(z[0]), 1 if z[0]>0 else -1
             t = z[1]/a
-            val,first,second = self.interpolants[sign].evaluate(t)
+            val,first,second = self.interpolant.evaluate(t)
             value = a*val
             gradient = np.array([sign*(val-t*first),first],dtype=self.dtype)
             if need_hessian:
@@ -216,7 +216,7 @@ class Example:
             val = z[1]
         else:
             a = abs(z[0])
-            val = a*self.interpolants[1 if z[0]>0 else -1].evaluate(z[1]/a)[0]
+            val = a*self.interpolant.evaluate(z[1]/a)[0]
         norm = self.sqrt(sum(v*v for v in x))
         return val+max(self.cast(0),norm*norm-100)
 
@@ -279,7 +279,10 @@ class Example:
                             wolfe_margin=float(gn@p-D(C2)*slope))
             all_first_trials_accepted = all_first_trials_accepted and alpha==1
             x = trial
-        return {"rows":rows,"all_first_trials_accepted":bool(all_first_trials_accepted),
+        return {"rows":rows,"final_position":list(map(str,x)),
+                "final_metric":[list(map(str,row)) for row in H],
+                "final_gradient":list(map(str,g)),"final_value":str(f),
+                "all_first_trials_accepted":bool(all_first_trials_accepted),
                 "max_absolute_cycle_position_error":str(cycle_error) if initial_exact else None,
                 "max_absolute_cycle_metric_error":str(metric_error) if initial_exact else None}
 
@@ -292,14 +295,20 @@ def check_jets(example,data):
         errors["gradients"] = max(errors["gradients"],max(abs(v) for v in gradient-data["g"][i]))
         errors["hessians"] = max(errors["hessians"],max(abs(v) for v in (hessian-data["K"][i]).flat))
     assert max(errors.values()) < Decimal("1e-85")
-    for interpolant in example.interpolants.values():
-        for j,segment in enumerate(interpolant.segments):
-            for k in range(21):
-                t = segment.a+segment.length*Decimal(k)/20
-                assert segment.evaluate(t)[1] >= Decimal(".01")
-            # Adjacent polynomials interpolate the same jets exactly.
-            assert segment.evaluate(segment.a) == tuple(interpolant.nodes[j][1:])
-            assert segment.evaluate(segment.c) == tuple(interpolant.nodes[j+1][1:])
+    interpolant = example.interpolant
+    for j,segment in enumerate(interpolant.segments):
+        for k in range(21):
+            t = segment.a+segment.length*Decimal(k)/20
+            assert segment.evaluate(t)[1] >= Decimal(".01")
+        # Adjacent pieces share the same endpoint values and derivatives.
+        assert segment.evaluate(segment.a) == tuple(interpolant.nodes[j][1:])
+        assert segment.evaluate(segment.c) == tuple(interpolant.nodes[j+1][1:])
+        # Check the polynomial itself, independently of the endpoint shortcuts.
+        for u,expected in [(Decimal(0),interpolant.nodes[j]),
+                           (Decimal(1),interpolant.nodes[j+1])]:
+            value,first,second = segment._unit(u,segment.p,segment.q,segment.P,segment.Q)
+            calculated = (segment.va+value,first/segment.length,second/segment.length**2)
+            assert max(abs(a-b) for a,b in zip(calculated,expected[1:])) < Decimal("1e-85")
     return {k:str(v) for k,v in errors.items()}
 
 
@@ -424,8 +433,9 @@ def main():
                   "initial_metric":[list(map(str,row)) for row in data["H"][0]],
                   "initial_scale":1,
                   "interpolation":{"monotonicity":"0.01",
-                    "least_bridge_indices":{str(sign):[seg.n for seg in h.segments]
-                                             for sign,h in precise.interpolants.items()}},
+                    "least_bridge_indices":[seg.n for seg in precise.interpolant.segments],
+                    "cycle_node_order":sorted(range(4),key=lambda i:data["nodes"][i][0]),
+                    "functions":1},
                   "parameters":{"c1":str(C1),"c2":str(C2)},"jet_errors":errors,
                   "derivative_checks":derivatives,
                   "reference":reference,"nearby_runs":nearby,"figure":figure_data,

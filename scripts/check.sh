@@ -17,8 +17,8 @@ fi
 if [ "$bfgs_python_checks" = yes ]; then
   "$bfgs_python" verification/verify.py
   # A complete check must execute the optional suites, not silently skip them.
-  "$bfgs_python" -c 'import sympy, nbformat, nbclient, IPython, latex2mathml, mistune, pygments'
-  "$bfgs_python" verification/build_notebook.py
+  "$bfgs_python" -c 'import sympy, nbformat, nbclient, ipykernel, IPython'
+  "$bfgs_python" verification/check_notebook.py
   "$bfgs_python" -m unittest discover -s verification -p 'test_*.py' -v
 fi
 if [ "$bfgs_lean_checks" = yes ]; then

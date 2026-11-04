@@ -14,152 +14,95 @@ set_option maxRecDepth 10000
 set_option linter.unusedSimpArgs false
 attribute [local simp] Matrix.cons_val_two Matrix.cons_val_three Matrix.vecHead Matrix.vecTail
 
-def firstPhase (br : Fin 2) : Fin 4 := if br = 0 then 2 else 0
-def lastPhase (br : Fin 2) : Fin 4 := if br = 0 then 3 else 1
+/-- The single interpolation list, in the order certified in Proposition 2.7. -/
+def nodeT : ℕ → ℝ
+  | 0 => -2 | 1 => -1 | 2 => phaseNodeT root 2
+  | 3 => phaseNodeT root 0 | 4 => phaseNodeT root 3
+  | 5 => phaseNodeT root 1 | 6 => 6 | _ => 7
 
-def nodeT (br : Fin 2) : ℕ → ℝ
-  | 0 => -2 | 1 => -1 | 2 => phaseNodeT root (firstPhase br)
-  | 3 => phaseNodeT root (lastPhase br) | 4 => 6 | _ => 7
+def nodeEta : ℕ → ℝ
+  | 0 => -2 | 1 => -1 | 2 => phaseNodeEta root 2
+  | 3 => phaseNodeEta root 0 | 4 => phaseNodeEta root 3
+  | 5 => phaseNodeEta root 1 | 6 => 6 | _ => 7
 
-def nodeEta (br : Fin 2) : ℕ → ℝ
-  | 0 => -2 | 1 => -1 | 2 => phaseNodeEta root (firstPhase br)
-  | 3 => phaseNodeEta root (lastPhase br) | 4 => 6 | _ => 7
+def nodeD : ℕ → ℝ
+  | 2 => phaseNodeD root 2 | 3 => phaseNodeD root 0
+  | 4 => phaseNodeD root 3 | 5 => phaseNodeD root 1 | _ => 1
 
-def nodeD (br : Fin 2) : ℕ → ℝ
-  | 2 => phaseNodeD root (firstPhase br)
-  | 3 => phaseNodeD root (lastPhase br) | _ => 1
+def nodeK : ℕ → ℝ
+  | 2 => phaseNodeK root 2 | 3 => phaseNodeK root 0
+  | 4 => phaseNodeK root 3 | 5 => phaseNodeK root 1 | _ => 0
 
-def nodeK (br : Fin 2) : ℕ → ℝ
-  | 2 => phaseNodeK root (firstPhase br)
-  | 3 => phaseNodeK root (lastPhase br) | _ => 0
+private theorem interval_between {I : RationalInterval} {x : ℝ} {a b : ℚ}
+    (h : I.Contains x) (ha : a < I.lo) (hb : I.hi < b) :
+    (a : ℝ) < x ∧ x < (b : ℝ) := by
+  exact ⟨lt_of_lt_of_le (by exact_mod_cast ha) h.1,
+    lt_of_le_of_lt h.2 (by exact_mod_cast hb)⟩
 
-private theorem interval_condition {a c A B : ℝ}
-    (hgap : 1 < c-a) (hsec : (1/2 : ℝ) < (B-A)/(c-a)) :
-    a < c ∧ (1/100 : ℝ)*(c-a) < B-A := by
-  have hgap0 : 0 < c-a := by linarith
-  have hs := (lt_div_iff₀ hgap0).mp hsec
-  constructor <;> nlinarith
+/-- The certified scalar enclosures imply the merged interpolation inequalities.
+In particular the small gap in values between phases 2 and 0 still has slope
+strictly above 0.01. -/
+private theorem nodeStep (i : ℕ) (hi : i < 7) :
+    nodeT i < nodeT (i+1) ∧ (1/100 : ℝ) < nodeD i ∧
+    (1/100 : ℝ) < nodeD (i+1) ∧
+    (1/100 : ℝ)*(nodeT (i+1)-nodeT i) < nodeEta (i+1)-nodeEta i := by
+  have ht0 := interval_between (a := 14026/10000) (b := 14027/10000)
+    (b246 root root_mem_interval) (by norm_num [i246]) (by norm_num [i246])
+  have he0 := interval_between (a := 10701/10000) (b := 10702/10000)
+    (b247 root root_mem_interval) (by norm_num [i247]) (by norm_num [i247])
+  have ht1 := interval_between (a := 47721/10000) (b := 47722/10000)
+    (b259 root root_mem_interval) (by norm_num [i259]) (by norm_num [i259])
+  have ht2 := interval_between (a := 2790/10000) (b := 2791/10000)
+    (b272 root root_mem_interval) (by norm_num [i272]) (by norm_num [i272])
+  have he2 := interval_between (a := 10520/10000) (b := 10521/10000)
+    (b273 root root_mem_interval) (by norm_num [i273]) (by norm_num [i273])
+  have ht3 := interval_between (a := 33299/10000) (b := 33300/10000)
+    (b288 root root_mem_interval) (by norm_num [i288]) (by norm_num [i288])
+  have he3 := interval_between (a := 43954/10000) (b := 43955/10000)
+    (b289 root root_mem_interval) (by norm_num [i289]) (by norm_num [i289])
+  have hd0 := slope_lower_0 root root_mem_interval
+  have hd1 := slope_lower_1 root root_mem_interval
+  have hd2 := slope_lower_2 root root_mem_interval
+  have hd3 := slope_lower_3 root root_mem_interval
+  interval_cases i <;>
+    norm_num [nodeT,nodeEta,nodeD,
+      ← traceNodeT_eq root root_half_lt root_quartic,
+      ← traceNodeEta_eq root root_half_lt root_quartic,
+      ← traceNodeD_eq root root_half_lt root_quartic,
+      traceNodeT,traceNodeEta,traceNodeD,n15] <;>
+    norm_num at ht0 he0 ht1 ht2 he2 ht3 he3 <;>
+    (repeat' constructor) <;> linarith
 
-private theorem nodeStep (br : Fin 2) (i : ℕ) (hi : i < 5) :
-    nodeT br i < nodeT br (i+1) ∧ (1/100 : ℝ) < nodeD br i ∧
-    (1/100 : ℝ) < nodeD br (i+1) ∧
-    (1/100 : ℝ)*(nodeT br (i+1)-nodeT br i) < nodeEta br (i+1)-nodeEta br i := by
-  fin_cases br
-  · interval_cases i
-    · norm_num [nodeT,nodeEta,nodeD,firstPhase,lastPhase]
-    · have hg := gap_positive_minus_0 root root_mem_interval
-      have hs := secant_lower_minus_0 root root_mem_interval
-      have hd0 := slope_lower_2 root root_mem_interval
-      have hd1 := slope_lower_3 root root_mem_interval
-      simp only [n397, n398, n399, n400, n15, div_eq_mul_inv, one_mul] at hg hs
-      have hi := interval_condition (a := -1) (c := n272 root) (A := -1) (B := n273 root)
-        (by simpa [sub_eq_add_neg] using hg)
-        (by simpa [sub_eq_add_neg, div_eq_mul_inv] using hs)
-      norm_num [nodeT,nodeEta,nodeD,firstPhase,lastPhase,
-        ← traceNodeT_eq root root_half_lt root_quartic,
-        ← traceNodeEta_eq root root_half_lt root_quartic,
-        ← traceNodeD_eq root root_half_lt root_quartic,
-        traceNodeT,traceNodeEta,traceNodeD,n15] at ⊢
-      exact ⟨hi.1, by linarith, by linarith [hi.2]⟩
-    · have hg := gap_positive_minus_1 root root_mem_interval
-      have hs := secant_lower_minus_1 root root_mem_interval
-      have hd0 := slope_lower_2 root root_mem_interval
-      have hd1 := slope_lower_3 root root_mem_interval
-      simp only [n401, n402, n403, n404, n405, n406, n15, div_eq_mul_inv, one_mul] at hg hs
-      have hi := interval_condition (a := n272 root) (c := n288 root) (A := n273 root) (B := n289 root)
-        (by simpa [sub_eq_add_neg] using hg)
-        (by simpa [sub_eq_add_neg, div_eq_mul_inv] using hs)
-      norm_num [nodeT,nodeEta,nodeD,firstPhase,lastPhase,
-        ← traceNodeT_eq root root_half_lt root_quartic,
-        ← traceNodeEta_eq root root_half_lt root_quartic,
-        ← traceNodeD_eq root root_half_lt root_quartic,
-        traceNodeT,traceNodeEta,traceNodeD,n15] at ⊢
-      exact ⟨hi.1, by linarith, by linarith, by linarith [hi.2]⟩
-    · have hg := gap_positive_minus_2 root root_mem_interval
-      have hs := secant_lower_minus_2 root root_mem_interval
-      have hd0 := slope_lower_2 root root_mem_interval
-      have hd1 := slope_lower_3 root root_mem_interval
-      simp only [n382, n407, n408, n409, n410, n411, n412, n15, div_eq_mul_inv, one_mul] at hg hs
-      have hi := interval_condition (a := n288 root) (c := 6) (A := n289 root) (B := 6)
-        (by simpa [sub_eq_add_neg] using hg)
-        (by simpa [sub_eq_add_neg, div_eq_mul_inv] using hs)
-      norm_num [nodeT,nodeEta,nodeD,firstPhase,lastPhase,
-        ← traceNodeT_eq root root_half_lt root_quartic,
-        ← traceNodeEta_eq root root_half_lt root_quartic,
-        ← traceNodeD_eq root root_half_lt root_quartic,
-        traceNodeT,traceNodeEta,traceNodeD,n15] at ⊢
-      exact ⟨hi.1, by linarith, by linarith [hi.2]⟩
-    · norm_num [nodeT,nodeEta,nodeD,firstPhase,lastPhase]
-  · interval_cases i
-    · norm_num [nodeT,nodeEta,nodeD,firstPhase,lastPhase]
-    · have hg := gap_positive_plus_0 root root_mem_interval
-      have hs := secant_lower_plus_0 root root_mem_interval
-      have hd0 := slope_lower_0 root root_mem_interval
-      have hd1 := slope_lower_1 root root_mem_interval
-      simp only [n383, n384, n385, n386, n15, div_eq_mul_inv, one_mul] at hg hs
-      have hi := interval_condition (a := -1) (c := n246 root) (A := -1) (B := n247 root)
-        (by simpa [sub_eq_add_neg] using hg)
-        (by simpa [sub_eq_add_neg, div_eq_mul_inv] using hs)
-      norm_num [nodeT,nodeEta,nodeD,firstPhase,lastPhase,
-        ← traceNodeT_eq root root_half_lt root_quartic,
-        ← traceNodeEta_eq root root_half_lt root_quartic,
-        ← traceNodeD_eq root root_half_lt root_quartic,
-        traceNodeT,traceNodeEta,traceNodeD,n15] at ⊢
-      exact ⟨hi.1, by linarith, by linarith [hi.2]⟩
-    · have hg := gap_positive_plus_1 root root_mem_interval
-      have hs := secant_lower_plus_1 root root_mem_interval
-      have hd0 := slope_lower_0 root root_mem_interval
-      have hd1 := slope_lower_1 root root_mem_interval
-      simp only [n387, n388, n389, n390, n391, n392, n15, div_eq_mul_inv, one_mul] at hg hs
-      have hi := interval_condition (a := n246 root) (c := n259 root) (A := n247 root) (B := n259 root)
-        (by simpa [sub_eq_add_neg] using hg)
-        (by simpa [sub_eq_add_neg, div_eq_mul_inv] using hs)
-      norm_num [nodeT,nodeEta,nodeD,firstPhase,lastPhase,
-        ← traceNodeT_eq root root_half_lt root_quartic,
-        ← traceNodeEta_eq root root_half_lt root_quartic,
-        ← traceNodeD_eq root root_half_lt root_quartic,
-        traceNodeT,traceNodeEta,traceNodeD,n15] at ⊢
-      exact ⟨hi.1, by linarith, by linarith [hi.2]⟩
-    · have hg := gap_positive_plus_2 root root_mem_interval
-      have hs := secant_lower_plus_2 root root_mem_interval
-      have hd0 := slope_lower_0 root root_mem_interval
-      have hd1 := slope_lower_1 root root_mem_interval
-      simp only [n382, n393, n394, n395, n396, n15, div_eq_mul_inv, one_mul] at hg hs
-      have hi := interval_condition (a := n259 root) (c := 6) (A := n259 root) (B := 6)
-        (by simpa [sub_eq_add_neg] using hg)
-        (by simpa [sub_eq_add_neg, div_eq_mul_inv] using hs)
-      norm_num [nodeT,nodeEta,nodeD,firstPhase,lastPhase,
-        ← traceNodeT_eq root root_half_lt root_quartic,
-        ← traceNodeEta_eq root root_half_lt root_quartic,
-        ← traceNodeD_eq root root_half_lt root_quartic,
-        traceNodeT,traceNodeEta,traceNodeD,n15] at ⊢
-      exact ⟨hi.1, by linarith [hi.2]⟩
-    · norm_num [nodeT,nodeEta,nodeD,firstPhase,lastPhase]
+/-- The supplement's deterministic piecewise-polynomial realization of the
+manuscript's interpolation data, using the least admissible bridge index. -/
+def profileData :=
+  canonicalProfile 7 nodeT nodeEta nodeD nodeK (1/100)
+    (by norm_num [nodeD]) rfl rfl nodeStep
 
-/-- The supplement's deterministic least-degree polynomial realization of
-the manuscript's interpolation data. -/
-def profileData (br : Fin 2) :=
-  canonicalProfile 5 (nodeT br) (nodeEta br) (nodeD br) (nodeK br) (1/100)
-    (by norm_num [nodeD]) rfl rfl (nodeStep br)
+def profile : C2Profile := profileData.val
 
-def profile (br : Fin 2) : C2Profile := (profileData br).val
-
-theorem profile_spec (br : Fin 2) : PiecewisePolynomial (profile br).value ∧
-    (∀ i ≤ 5, MatchesJet (profile br) (nodeT br i) (nodeEta br i) (nodeD br i) (nodeK br i)) ∧
-    (∀ t, (1/100 : ℝ) ≤ (profile br).slope t) ∧ HasIdentityTails (profile br) := by
-  have h := (profileData br).property
-  refine ⟨h.1,h.2.1,h.2.2.1,hasIdentityTails_of_two_tails (profile br) (a := -2) (b := 7) ?_ ?_⟩
+theorem profile_spec : PiecewisePolynomial profile.value ∧
+    (∀ i ≤ 7, MatchesJet profile (nodeT i) (nodeEta i) (nodeD i) (nodeK i)) ∧
+    (∀ t, (1/100 : ℝ) ≤ profile.slope t) ∧ HasIdentityTails profile := by
+  have h := profileData.property
+  refine ⟨h.1,h.2.1,h.2.2.1,hasIdentityTails_of_two_tails profile (a := -2) (b := 7) ?_ ?_⟩
   · intro t ht
     simpa [nodeT,nodeEta,nodeD,profile] using h.2.2.2.1 t ht
   · intro t ht
     simpa [nodeT,nodeEta,nodeD,profile] using h.2.2.2.2 t ht
 
-def f : Vec → ℝ := shearObjective (1/20) (profile 0) (profile 1)
-def g : Vec → Vec := shearGradient (1/20) (profile 0) (profile 1)
-def hessian : Vec → (Vec →L[ℝ] Vec) := shearHessian (1/20) (profile 0) (profile 1)
+def f : Vec → ℝ := shearObjective (1/20) profile profile
+def g : Vec → Vec := shearGradient (1/20) profile profile
+def hessian : Vec → (Vec →L[ℝ] Vec) := shearHessian (1/20) profile profile
+
+/-- The objective uses the same univariate function on the two sides of the axis. -/
+theorem f_eq_single_profile (x : Vec) :
+    f x = if x.1 - (1/20 : ℝ)*x.2 = 0 then x.2 else
+      |x.1 - (1/20 : ℝ)*x.2| * profile.value (x.2 / |x.1 - (1/20 : ℝ)*x.2|) := by
+  simp [f,shearObjective,physicalAngular,angularLift,shearRow,verticalRow,dot,sub_eq_add_neg]
 
 theorem f_lipschitz : ∃ K : NNReal, LipschitzWith K f :=
-  shearObjective_lipschitz _ _ _ (profile_spec 0).2.2.2 (profile_spec 1).2.2.2
+  shearObjective_lipschitz _ _ _ profile_spec.2.2.2 profile_spec.2.2.2
 
 theorem f_continuous : Continuous f := by
   obtain ⟨K,hK⟩ := f_lipschitz
@@ -175,10 +118,10 @@ theorem f_zero : f 0 = 0 := shearObjective_zero _ _ _
 
 theorem f_nonstationary (x : Vec) : 0 ∉ clarkeSubdifferential f x :=
   shearObjective_nonstationary _ (1/100) _ _ (by norm_num) (by norm_num)
-    (profile_spec 0).2.2.1 (profile_spec 1).2.2.1 x
+    profile_spec.2.2.1 profile_spec.2.2.1 x
 
 theorem f_contDiffAt (x : Vec) (hx : x ≠ 0) : ContDiffAt ℝ 2 f x :=
-  shearObjective_contDiffAt _ _ _ (profile_spec 0).2.2.2 (profile_spec 1).2.2.2 x hx
+  shearObjective_contDiffAt _ _ _ profile_spec.2.2.2 profile_spec.2.2.2 x hx
 
 theorem f_gradient (x : Vec) (hx : dot (shearRow (1/20)) x ≠ 0) : IsGradientAt f (g x) x :=
   shearObjective_gradient _ _ _ x hx
@@ -186,17 +129,17 @@ theorem f_gradient (x : Vec) (hx : dot (shearRow (1/20)) x ≠ 0) : IsGradientAt
 theorem g_derivative (x : Vec) (hx : dot (shearRow (1/20)) x ≠ 0) :
     HasFDerivAt g (hessian x) x := shearGradient_derivative _ _ _ x hx
 
-def phaseBranch : Fin 4 → Fin 2 := ![1,1,0,0]
-def phaseIndex : Fin 4 → ℕ := ![2,3,2,3]
+/-- The positions of the four cycle phases in the shared interpolation list. -/
+def phaseIndex : Fin 4 → ℕ := ![3,5,2,4]
 
 theorem profile_phase_jet (i : Fin 4) :
-    MatchesJet (profile (phaseBranch i)) (phaseNodeT root i)
+    MatchesJet profile (phaseNodeT root i)
       (phaseNodeEta root i) (phaseNodeD root i) (phaseNodeK root i) := by
   fin_cases i
-  · exact (profile_spec 1).2.1 2 (by norm_num)
-  · exact (profile_spec 1).2.1 3 (by norm_num)
-  · exact (profile_spec 0).2.1 2 (by norm_num)
-  · exact (profile_spec 0).2.1 3 (by norm_num)
+  · exact profile_spec.2.1 3 (by norm_num)
+  · exact profile_spec.2.1 5 (by norm_num)
+  · exact profile_spec.2.1 2 (by norm_num)
+  · exact profile_spec.2.1 4 (by norm_num)
 
 theorem phaseCoordinate_eq_dot (i : Fin 4) : phaseCoordinate root i =
     dot (shearRow (1/20)) (phasePoint root i.castSucc) := by
@@ -230,19 +173,8 @@ theorem phase_off_axis (i : Fin 4) : dot (shearRow (1/20)) (phasePoint root i.ca
   · exact hs.ne
 
 theorem profile_choice (i : Fin 4) :
-    (if dot (shearRow (1/20)) (phasePoint root i.castSucc) < 0 then profile 0 else profile 1) =
-      profile (phaseBranch i) := by
-  rw [← phaseCoordinate_eq_dot]
-  have hs := phase_sign i
-  fin_cases i
-  · change (if phaseCoordinate root 0 < 0 then profile 0 else profile 1) = profile 1
-    exact if_neg (not_lt.mpr (show 0 < phaseCoordinate root 0 from hs).le)
-  · change (if phaseCoordinate root 1 < 0 then profile 0 else profile 1) = profile 1
-    exact if_neg (not_lt.mpr (show 0 < phaseCoordinate root 1 from hs).le)
-  · change (if phaseCoordinate root 2 < 0 then profile 0 else profile 1) = profile 0
-    exact if_pos (show phaseCoordinate root 2 < 0 from hs)
-  · change (if phaseCoordinate root 3 < 0 then profile 0 else profile 1) = profile 0
-    exact if_pos (show phaseCoordinate root 3 < 0 from hs)
+    (if dot (shearRow (1/20)) (phasePoint root i.castSucc) < 0 then profile else profile) =
+      profile := by simp
 
 theorem f_phase (i : Fin 4) : f (phasePoint root i.castSucc) = phaseValue root i.castSucc := by
   apply shearObjective_value_of_jet _ _ _ _ _ (phase_off_axis i)
@@ -345,8 +277,8 @@ theorem g_hasFDerivAt_phase_all (i : Fin 5) :
 
 theorem f_piecewiseRational : Semialgebraic.PiecewiseRationalOn Set.univ
     (fun z : Semialgebraic.Space 3 => f (z 0,z 1)) :=
-  Semialgebraic.physicalAngular_piecewiseRational (profile 0) (profile 1)
-    (profile_spec 0).1 (profile_spec 1).1 (shearRow (1/20)) verticalRow
+  Semialgebraic.physicalAngular_piecewiseRational profile profile
+    profile_spec.1 profile_spec.1 (shearRow (1/20)) verticalRow
 
 theorem f_semialgebraic : Semialgebraic.IsSemialgebraicFunction f := by
   simpa only [Semialgebraic.IsSemialgebraicFunction, Set.mem_univ, true_and] using

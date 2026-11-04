@@ -11,6 +11,10 @@ The result covers every Armijo–Wolfe parameter pair
 `0 < c₁ ≤ 0.03` and `0.6 ≤ c₂ < 1` on the same open set, and gives positive
 failure probability under the Gaussian/Wishart initialization law.
 
+Version 0.2.0 of the supplement accompanies the manuscript revision of
+4 November 2026, using a single-interpolant construction. In the transformed coordinates,
+the homogeneous objective is `F(z) = |z₁| h(z₂/|z₁|)` for `z₁ ≠ 0`, with
+`F(0,z₂) = z₂`. One function `h` interpolates all four cycle points.
 Manuscript TeX and bibliography sources are not part of this supplement.
 
 ## Start here
@@ -18,8 +22,6 @@ Manuscript TeX and bibliography sources are not part of this supplement.
 - [Paper on arXiv](https://arxiv.org/abs/2610.34087) and [bundled manuscript PDF](BFGS%20can%20converge%20to%20non-Clarke-stationary%20points%20with%20positive%20probability.pdf).
 - [Executed notebook](verification/verification.ipynb): exact cycle identities,
   interval bounds, and the published tables and contraction certificate.
-- [Offline HTML notebook](verification/verification.html): download and open
-  locally to read the executed cells without Jupyter.
 - [Lean main theorem](BFGS/MainTheorem.lean): the statement corresponding to Theorem 1.1.
 - [Manuscript correspondence](docs/manuscript-map.md): section, result, and equation
   numbers linked to the Python checks and Lean declarations.
@@ -40,7 +42,7 @@ python3 verification/verify.py
 python3 verification/test_verifier.py
 ```
 
-For the notebook, symbolic checks, and the complete regression suite:
+For notebook execution, symbolic checks, and the verification tests:
 
 ```sh
 python3 -m venv .venv
@@ -48,8 +50,8 @@ python3 -m venv .venv
 BFGS_PYTHON=.venv/bin/python ./scripts/check.sh --python-only
 ```
 
-This executes all six notebook cells in a fresh Jupyter kernel with an empty
-working directory, exports the offline HTML, and runs the tests. The notebook
+This executes the existing notebook in a fresh Jupyter kernel with an empty
+working directory, checks its displayed mathematical outputs, and runs the tests. The notebook
 can also be copied elsewhere and executed by itself: it reads no companion
 source files or saved certificates. See [verification details](verification/README.md).
 
@@ -90,7 +92,7 @@ BFGS/MainTheorem.lean          Theorem 1.1 and its concrete witness
 BFGS/Counterexample/           Construction and its certified inequalities
 BFGS/Analysis/                 Supporting analysis and BFGS dynamics
 BFGS/Arithmetic/               Exact arithmetic and interval lemmas
-verification/                 Executed notebook, Python checks and certificates
+verification/                 Executed notebook, independent verifiers and tests
 experiments/                  Figure-generation scripts and reproduction instructions
 docs/manuscript-map.md         Correspondence with manuscript results
 scripts/check.sh               Combined Python and Lean checks
@@ -100,11 +102,11 @@ lake-manifest.json             Pinned dependency revisions
 .github/workflows/verify.yml   GitHub Actions checks
 ```
 
-Only modules in the public theorem's import closure are retained. Generated
-certificates are committed for inspection; the verifiers recompute their
-contents instead of trusting saved outputs. Build caches and virtual
-environments are ignored. The offline HTML is a readable export of the same
-executed notebook, not an additional proof source.
+Every Lean module belongs to the public theorem's import closure. The checked-in
+arithmetic certificates are Lean proof sources verified by its kernel. Python
+independently recomputes the bounds; it does not trust saved notebook outputs.
+The notebook itself is the editable source for its calculations. Build caches
+and virtual environments are ignored.
 
 The notebook computes the refined root interval, interpolation tables,
 determinant, Γ, row sums and polynomial bridge indices from the problem data.
@@ -113,7 +115,9 @@ Its computed maximum row sum is `0.776 < 0.78`. The explicit polynomial interpol
 the supplement is one realization of Lemmas 2.6 and 2.10. Lean uses the manuscript's fixed normalization by the exact cycle
 factor and proves attraction to its positive fixed ray.
 
-See [validation](docs/validation.md) for the checks performed on this bundle.
+The automated checks compare the notebook against the independent verifier,
+exercise arithmetic and certificate failure cases, and audit every local Lean
+declaration. GitHub Actions runs the same Python and Lean checks.
 
 ## License and citation
 

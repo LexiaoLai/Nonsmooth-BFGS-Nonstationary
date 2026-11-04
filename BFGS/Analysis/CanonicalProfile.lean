@@ -1,8 +1,8 @@
 import BFGS.Analysis.FiniteInterpolation
 
-/-! Deterministic least-degree polynomial profiles with affine tails.
-There is no choice of an unspecified interpolating function: each bridge
-uses the least natural degree satisfying the displayed three inequalities. -/
+/-! Deterministic piecewise-polynomial interpolants with affine tails.
+Each bridge uses the least natural index satisfying the displayed three
+inequalities; no unspecified interpolating function is chosen. -/
 namespace BFGS
 noncomputable section
 

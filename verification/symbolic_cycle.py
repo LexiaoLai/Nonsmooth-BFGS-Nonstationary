@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Independent SymPy checks of Lemma 2.5, equations (2.11)--(2.12).
+"""Independent SymPy checks of Lemma 2.5, equations (2.17)--(2.18).
 
 Every residual is a rational function in the indeterminate b. Its numerator
 is reduced modulo the quartic P over QQ; its denominator must be coprime to P.
@@ -9,7 +9,7 @@ root. Positivity, root isolation, norm bounds, and attraction are certified by
 the separate standard-library interval verifier, verify.py.
 
 Run this file from any working directory. It prints to stdout and writes no
-certificate files. Install the optional requirements-symbolic.txt first.
+certificate files. Install the optional requirements-notebook.txt first.
 """
 
 from argparse import ArgumentParser
